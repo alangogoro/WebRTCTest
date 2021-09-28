@@ -1,0 +1,20 @@
+PODS:
+  - GoogleWebRTC (1.1.31999)
+  - Starscream (4.0.4)
+
+DEPENDENCIES:
+  - GoogleWebRTC
+  - Starscream (~> 4.0.0)
+
+SPEC REPOS:
+  trunk:
+    - GoogleWebRTC
+    - Starscream
+
+SPEC CHECKSUMS:
+  GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
+  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
+
+PODFILE CHECKSUM: c57ca88f82b5bb45480c104f84994a4f78b4b924
+
+COCOAPODS: 1.11.0
