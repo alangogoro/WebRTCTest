@@ -3,18 +3,36 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		42CE8F8F875160CC5A05FC41 /* Pods_WebRTCex.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 063291210D5E67FA973D8A54 /* Pods_WebRTCex.framework */; };
+		CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */; };
+		CEB1223F2702FF8A00677BBC /* SocketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223E2702FF8A00677BBC /* SocketModel.swift */; };
+		CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1224027031C0D00677BBC /* Data+Extension.swift */; };
+		CEB122432703222F00677BBC /* SocketEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB122422703222F00677BBC /* SocketEnum.swift */; };
+		CEB1224527032D8E00677BBC /* SocketDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1224427032D8E00677BBC /* SocketDelegate.swift */; };
+		CEB1224727032FBF00677BBC /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1224627032FBF00677BBC /* Constant.swift */; };
 		CEB775862702C81400EF4E15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB775852702C81400EF4E15 /* AppDelegate.swift */; };
 		CEB775882702C81400EF4E15 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB775872702C81400EF4E15 /* SceneDelegate.swift */; };
 		CEB7758A2702C81400EF4E15 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB775892702C81400EF4E15 /* ViewController.swift */; };
 		CEB7758F2702C81700EF4E15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEB7758E2702C81700EF4E15 /* Assets.xcassets */; };
 		CEB775922702C81700EF4E15 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEB775902702C81700EF4E15 /* LaunchScreen.storyboard */; };
+		CEB7759C2702F83900EF4E15 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB7759B2702F83900EF4E15 /* SocketManager.swift */; };
+		CEB7759E2702FB0500EF4E15 /* StarscreamSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB7759D2702FB0500EF4E15 /* StarscreamSingleton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		063291210D5E67FA973D8A54 /* Pods_WebRTCex.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WebRTCex.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		177EA421447C815244AF9145 /* Pods-WebRTCex.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebRTCex.release.xcconfig"; path = "Target Support Files/Pods-WebRTCex/Pods-WebRTCex.release.xcconfig"; sourceTree = "<group>"; };
+		AAAA33F70FD5B7161380127D /* Pods-WebRTCex.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebRTCex.debug.xcconfig"; path = "Target Support Files/Pods-WebRTCex/Pods-WebRTCex.debug.xcconfig"; sourceTree = "<group>"; };
+		CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		CEB1223E2702FF8A00677BBC /* SocketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketModel.swift; sourceTree = "<group>"; };
+		CEB1224027031C0D00677BBC /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
+		CEB122422703222F00677BBC /* SocketEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketEnum.swift; sourceTree = "<group>"; };
+		CEB1224427032D8E00677BBC /* SocketDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketDelegate.swift; sourceTree = "<group>"; };
+		CEB1224627032FBF00677BBC /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		CEB775822702C81400EF4E15 /* WebRTCex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WebRTCex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEB775852702C81400EF4E15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEB775872702C81400EF4E15 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -22,6 +40,8 @@
 		CEB7758E2702C81700EF4E15 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CEB775912702C81700EF4E15 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CEB775932702C81700EF4E15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CEB7759B2702F83900EF4E15 /* SocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
+		CEB7759D2702FB0500EF4E15 /* StarscreamSingleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarscreamSingleton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +49,46 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42CE8F8F875160CC5A05FC41 /* Pods_WebRTCex.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9BC9410901344E32E1C26D2C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				063291210D5E67FA973D8A54 /* Pods_WebRTCex.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C5C8100BEE396B1781413DFD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				AAAA33F70FD5B7161380127D /* Pods-WebRTCex.debug.xcconfig */,
+				177EA421447C815244AF9145 /* Pods-WebRTCex.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		CEB1223B2702FEE400677BBC /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */,
+				CEB1224027031C0D00677BBC /* Data+Extension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		CEB775792702C81400EF4E15 = {
 			isa = PBXGroup;
 			children = (
 				CEB775842702C81400EF4E15 /* WebRTCex */,
 				CEB775832702C81400EF4E15 /* Products */,
+				C5C8100BEE396B1781413DFD /* Pods */,
+				9BC9410901344E32E1C26D2C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,14 +103,45 @@
 		CEB775842702C81400EF4E15 /* WebRTCex */ = {
 			isa = PBXGroup;
 			children = (
+				CEB1224627032FBF00677BBC /* Constant.swift */,
+				CEB7759A2702F7F000EF4E15 /* WebSocket */,
+				CEB775992702F7E300EF4E15 /* Controller */,
+				CEB1223B2702FEE400677BBC /* Extension */,
 				CEB775852702C81400EF4E15 /* AppDelegate.swift */,
 				CEB775872702C81400EF4E15 /* SceneDelegate.swift */,
-				CEB775892702C81400EF4E15 /* ViewController.swift */,
 				CEB7758E2702C81700EF4E15 /* Assets.xcassets */,
 				CEB775902702C81700EF4E15 /* LaunchScreen.storyboard */,
 				CEB775932702C81700EF4E15 /* Info.plist */,
 			);
 			path = WebRTCex;
+			sourceTree = "<group>";
+		};
+		CEB775992702F7E300EF4E15 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				CEB775892702C81400EF4E15 /* ViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		CEB7759A2702F7F000EF4E15 /* WebSocket */ = {
+			isa = PBXGroup;
+			children = (
+				CEB7759F2702FBEF00EF4E15 /* Model */,
+				CEB1224427032D8E00677BBC /* SocketDelegate.swift */,
+				CEB7759D2702FB0500EF4E15 /* StarscreamSingleton.swift */,
+				CEB7759B2702F83900EF4E15 /* SocketManager.swift */,
+				CEB122422703222F00677BBC /* SocketEnum.swift */,
+			);
+			path = WebSocket;
+			sourceTree = "<group>";
+		};
+		CEB7759F2702FBEF00EF4E15 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				CEB1223E2702FF8A00677BBC /* SocketModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +151,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEB775962702C81700EF4E15 /* Build configuration list for PBXNativeTarget "WebRTCex" */;
 			buildPhases = (
+				0654D361ADCAA59617885706 /* [CP] Check Pods Manifest.lock */,
 				CEB7757E2702C81400EF4E15 /* Sources */,
 				CEB7757F2702C81400EF4E15 /* Frameworks */,
 				CEB775802702C81400EF4E15 /* Resources */,
+				06430698C5AB362C428D05C1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -128,14 +210,64 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		06430698C5AB362C428D05C1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WebRTCex/Pods-WebRTCex-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WebRTCex/Pods-WebRTCex-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WebRTCex/Pods-WebRTCex-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		0654D361ADCAA59617885706 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WebRTCex-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		CEB7757E2702C81400EF4E15 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CEB7758A2702C81400EF4E15 /* ViewController.swift in Sources */,
+				CEB7759E2702FB0500EF4E15 /* StarscreamSingleton.swift in Sources */,
 				CEB775862702C81400EF4E15 /* AppDelegate.swift in Sources */,
+				CEB1224527032D8E00677BBC /* SocketDelegate.swift in Sources */,
+				CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */,
+				CEB122432703222F00677BBC /* SocketEnum.swift in Sources */,
+				CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */,
 				CEB775882702C81400EF4E15 /* SceneDelegate.swift in Sources */,
+				CEB1224727032FBF00677BBC /* Constant.swift in Sources */,
+				CEB7759C2702F83900EF4E15 /* SocketManager.swift in Sources */,
+				CEB1223F2702FF8A00677BBC /* SocketModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,6 +403,7 @@
 		};
 		CEB775972702C81700EF4E15 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AAAA33F70FD5B7161380127D /* Pods-WebRTCex.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -290,6 +423,7 @@
 		};
 		CEB775982702C81700EF4E15 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 177EA421447C815244AF9145 /* Pods-WebRTCex.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -1,0 +1,26 @@
+//
+//  SocketEnum.swift
+//  WebRTCex
+//
+//  Created by usr on 2021/9/28.
+//
+
+import Foundation
+
+enum SocketType: String {
+    case link = "link_on"
+    case bind = "bind"
+    case say = "say"
+    case ping = "ping"
+    
+    /*
+     case CallRemote = "call_remote"
+     case CallRemoteCallBack = "call_remote_callback"
+     case ClientOffer = "client_offer"
+     case ClientAnswer = "client_answer"
+     case ClientCandidate = "client_candidate"
+     case CancelPhone = "cancel_phone"
+     case ReadComplete = "read_complete"
+     case CheckCalling = "check_calling"
+     */
+}
