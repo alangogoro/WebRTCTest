@@ -13,7 +13,7 @@ protocol SocketDelegate: AnyObject {
     func didDisconnect(_ socket: SocketManager)
     func didLinkOn(_ socket: SocketManager, iceServers: [IceServer])
     func didBind(_ socket: SocketManager, linkId: Int)
-    func didReceivcMessage(_ socket: SocketManager, messageData: ReceivedMessageModel)
+    func didReceivcMessage(_ socket: SocketManager, message: ReceivedMessageModel)
 }
 
 /// StarscreamSingleton 必須處理的內容

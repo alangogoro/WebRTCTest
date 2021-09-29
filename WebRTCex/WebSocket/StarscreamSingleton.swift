@@ -30,7 +30,7 @@ class StarscreamSingleton: StarscreamWebSocket {
     
     func bindUser(json: Any, onSuccess: @escaping (String?) -> ()) {
         guard JSONSerialization.isValidJSONObject(json) else {
-            debugPrint("[WEBSOCKET] bindUser value is not a valid JSON object.\n\(json)")
+            debugPrint("[WEBSOCKET] bindUser value is not a valid JSON object. \(json)")
             return
         }
         do {
@@ -39,13 +39,13 @@ class StarscreamSingleton: StarscreamWebSocket {
                 onSuccess("Success")
             }
         } catch let error {
-            debugPrint("[WEBSOCKET] bindUser error when serializing JSON:\n\(error)")
+            debugPrint("[WEBSOCKET] bindUser error when serializing JSON: \(error)")
         }
     }
     
     func send(json: Any, onSuccess: @escaping (String?) -> ()) {
         guard JSONSerialization.isValidJSONObject(json) else {
-            debugPrint("[WEBSOCKET] send Value is not a valid JSON object.\n\(json)")
+            debugPrint("[WEBSOCKET] send value is not a valid JSON object. \(json)")
             return
         }
         do {
@@ -54,7 +54,7 @@ class StarscreamSingleton: StarscreamWebSocket {
                 onSuccess("Success")
             }
         } catch let error {
-            debugPrint("[WEBSOCKET] send error when serializing JSON:\n\(error)")
+            debugPrint("[WEBSOCKET] send error when serializing JSON: \(error)")
         }
     }
     
@@ -85,10 +85,9 @@ extension StarscreamSingleton: WebSocketDelegate {
         case .binary(let data):
             debugPrint("Starscream received data: \(data)")
             break
-        case .pong(_):
-            break
         case .ping(_):
-            debugPrint("---- ping")
+            break
+        case .pong(_):
             break
         case .viabilityChanged(_):
             break

@@ -34,52 +34,22 @@ struct ReceivedMessageModel: Codable {
     }
 }
 
-struct IceserverConfig: Codable {
-    let iceServers: [IceServer]?
-    
-    enum CodingKeys: CodingKey {
-        case iceServers
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        iceServers = try? container.decodeIfPresent([IceServer].self, forKey: .iceServers) ?? nil
-    }
-}
-
-struct IceServer: Codable {
-    let urls: String?
-    let username: String?
-    let credential: String?
-    
-    enum CodingKeys: CodingKey {
-        case urls, username, credential
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        urls = try? container.decodeIfPresent(String.self, forKey: .urls) ?? ""
-        username = try? container.decodeIfPresent(String.self, forKey: .username) ?? ""
-        credential = try? container.decodeIfPresent(String.self, forKey: .credential) ?? ""
-    }
-}
-
-// MARK: - Socket Binding
+// MARK: - Socket - Bind
 struct BindUserModel: Codable {
-    let action: String?
-    let user_id: String?
-    let user_name: String?
-    let link_id: Int?
-    let to_userid: String?
+    let action: String
+    let user_id: String
+    let user_name: String
+    let link_id: Int
+    let to_userid: String
 }
 
-// MARK: - Socket Send
+// MARK: - Socket - Send
 struct SendMessageModel: Codable {
     let action: String
     let user_id: String
     let user_name: String
     let to_userid: String
     let content: String
-    let category: String
-    let media: String
+    var category: String? = "private"
+    var media: String? = ""
 }

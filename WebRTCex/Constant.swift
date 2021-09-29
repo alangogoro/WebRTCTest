@@ -16,6 +16,7 @@ struct Constants {
     
     struct Ids {
         static let User_Id_He = "AO0ZV8X8RX64"
-        static let User_Id_She = "3OQA87CJFNW"
+        //                      "XVU1NP18MT86" Josh
+        static let User_Id_She = "RDS0H0FE36NE"
     }
 }

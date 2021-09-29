@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		42CE8F8F875160CC5A05FC41 /* Pods_WebRTCex.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 063291210D5E67FA973D8A54 /* Pods_WebRTCex.framework */; };
+		CEACCC612704235800FD8A2B /* RTCModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC602704235800FD8A2B /* RTCModel.swift */; };
+		CEACCC642704488200FD8A2B /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC632704488200FD8A2B /* Chat.swift */; };
 		CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */; };
 		CEB1223F2702FF8A00677BBC /* SocketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223E2702FF8A00677BBC /* SocketModel.swift */; };
 		CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1224027031C0D00677BBC /* Data+Extension.swift */; };
@@ -27,6 +29,8 @@
 		063291210D5E67FA973D8A54 /* Pods_WebRTCex.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WebRTCex.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		177EA421447C815244AF9145 /* Pods-WebRTCex.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebRTCex.release.xcconfig"; path = "Target Support Files/Pods-WebRTCex/Pods-WebRTCex.release.xcconfig"; sourceTree = "<group>"; };
 		AAAA33F70FD5B7161380127D /* Pods-WebRTCex.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebRTCex.debug.xcconfig"; path = "Target Support Files/Pods-WebRTCex/Pods-WebRTCex.debug.xcconfig"; sourceTree = "<group>"; };
+		CEACCC602704235800FD8A2B /* RTCModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTCModel.swift; sourceTree = "<group>"; };
+		CEACCC632704488200FD8A2B /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		CEB1223E2702FF8A00677BBC /* SocketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketModel.swift; sourceTree = "<group>"; };
 		CEB1224027031C0D00677BBC /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
@@ -73,6 +77,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		CEACCC622704486000FD8A2B /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				CEACCC632704488200FD8A2B /* Chat.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		CEB1223B2702FEE400677BBC /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -105,6 +117,7 @@
 			children = (
 				CEB1224627032FBF00677BBC /* Constant.swift */,
 				CEB7759A2702F7F000EF4E15 /* WebSocket */,
+				CEACCC622704486000FD8A2B /* ViewModel */,
 				CEB775992702F7E300EF4E15 /* Controller */,
 				CEB1223B2702FEE400677BBC /* Extension */,
 				CEB775852702C81400EF4E15 /* AppDelegate.swift */,
@@ -140,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				CEB1223E2702FF8A00677BBC /* SocketModel.swift */,
+				CEACCC602704235800FD8A2B /* RTCModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -257,6 +271,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEACCC642704488200FD8A2B /* Chat.swift in Sources */,
 				CEB7758A2702C81400EF4E15 /* ViewController.swift in Sources */,
 				CEB7759E2702FB0500EF4E15 /* StarscreamSingleton.swift in Sources */,
 				CEB775862702C81400EF4E15 /* AppDelegate.swift in Sources */,
@@ -264,6 +279,7 @@
 				CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */,
 				CEB122432703222F00677BBC /* SocketEnum.swift in Sources */,
 				CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */,
+				CEACCC612704235800FD8A2B /* RTCModel.swift in Sources */,
 				CEB775882702C81400EF4E15 /* SceneDelegate.swift in Sources */,
 				CEB1224727032FBF00677BBC /* Constant.swift in Sources */,
 				CEB7759C2702F83900EF4E15 /* SocketManager.swift in Sources */,
