@@ -49,10 +49,12 @@ class ViewController: UIViewController {
                 socketManager!.connect()
             }
         }
+        /*
         if timer != nil {
             timer!.invalidate()
             timer = nil
         }
+         */
     }
     
     @objc func willTerminate() {
@@ -114,7 +116,7 @@ class ViewController: UIViewController {
     
     private func sendMessages() {
         timer = Timer.scheduledTimer(withTimeInterval: 8, repeats: true) { [weak self] _ in
-            self?.send("")
+            self?.send("Pokémon getto daze")
         }
     }
     
