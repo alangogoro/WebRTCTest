@@ -9,12 +9,12 @@ import Foundation
 
 extension Data {
     
-    func parseToType<T: Decodable>(_ source: T) -> T? {
-        var list = [Any?]()
+    func parseToReceivedMessageModel() -> [ReceivedMessageModel]? {
+        var list = [ReceivedMessageModel]()
         do {
-            let decodedData = try JSONDecoder().decode(source.self as! T.Type, from: self)
+            let decodedData = try JSONDecoder().decode(ReceivedMessageModel.self, from: self)
             list.append(decodedData)
-            return decodedData
+            return list
         } catch {
             return nil
         }

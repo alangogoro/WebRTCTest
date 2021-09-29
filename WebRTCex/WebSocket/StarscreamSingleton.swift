@@ -30,7 +30,7 @@ class StarscreamSingleton: StarscreamWebSocket {
     
     func bindUser(json: Any, onSuccess: @escaping (String?) -> ()) {
         guard JSONSerialization.isValidJSONObject(json) else {
-            debugPrint("[WEBSOCKET] bindUser value is not a valid JSON object.\n\(json)")
+            debugPrint("[WEBSOCKET] bindUser value is not a valid JSON object. \(json)")
             return
         }
         do {
@@ -39,13 +39,13 @@ class StarscreamSingleton: StarscreamWebSocket {
                 onSuccess("Success")
             }
         } catch let error {
-            debugPrint("[WEBSOCKET] bindUser error when serializing JSON:\n\(error)")
+            debugPrint("[WEBSOCKET] bindUser error when serializing JSON: \(error)")
         }
     }
     
     func send(json: Any, onSuccess: @escaping (String?) -> ()) {
         guard JSONSerialization.isValidJSONObject(json) else {
-            debugPrint("[WEBSOCKET] send Value is not a valid JSON object.\n\(json)")
+            debugPrint("[WEBSOCKET] send value is not a valid JSON object. \(json)")
             return
         }
         do {
@@ -54,7 +54,7 @@ class StarscreamSingleton: StarscreamWebSocket {
                 onSuccess("Success")
             }
         } catch let error {
-            debugPrint("[WEBSOCKET] send error when serializing JSON:\n\(error)")
+            debugPrint("[WEBSOCKET] send error when serializing JSON: \(error)")
         }
     }
     
@@ -65,8 +65,8 @@ extension StarscreamSingleton: WebSocketDelegate {
     func didReceive(event: WebSocketEvent,
                     client: WebSocket) {
         switch event {
-        case .connected(let headers):
-            debugPrint("Starscream is connected: \(headers)")
+        case .connected(_):
+            // debugPrint("Starscream is connected: \(_)")
             self.delegate?.didConnect(self)
         case .disconnected(let reason, let code):
             debugPrint("Starscream is disconnected: \(reason) with code: \(code)")
@@ -74,17 +74,20 @@ extension StarscreamSingleton: WebSocketDelegate {
             
         case .text(let text):
             if let data = text.data(using: String.Encoding.utf8) {
-                guard let message: [ReceivedMessageModel] =
-                        data.parseToType([ReceivedMessageModel]()) else { return }
+                guard let message =
+                        data.parseToReceivedMessageModel() else {
+                    debugPrint("Starscream didReceive text, but failed parsing JSON: ", text)
+                    return
+                }
                 self.delegate?.starscream(self, didReceiveMessage: message)
             }
             
         case .binary(let data):
             debugPrint("Starscream received data: \(data)")
             break
-        case .pong(_):
-            break
         case .ping(_):
+            break
+        case .pong(_):
             break
         case .viabilityChanged(_):
             break
