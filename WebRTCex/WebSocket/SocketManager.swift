@@ -10,32 +10,34 @@ import Foundation
 final class SocketManager {
     
     private let userId: String
+    private let userName: String
     private let webSocket: StarscreamSingleton
     weak var delegate: SocketDelegate?
     
     private var linkId: Int?
     private var iceServers: [IceServer]?
-    var isSocketConnected: Bool = false
+    private(set) var isSocketConnected: Bool = false
     
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
     
     private var pingTimer = Timer()
     
-    init(webSocket: StarscreamSingleton, userId: String) {
+    init(webSocket: StarscreamSingleton, userId: String, userName: String? = "") {
         self.userId = userId
         self.webSocket = webSocket
+        self.userName = userName ?? ""
     }
     
     func connect() {
-        self.webSocket.delegate = self
-        self.webSocket.connect()
+        webSocket.delegate = self
+        webSocket.connect()
     }
     
     func disconnect() {
         isSocketConnected = false
-//        self.stopPing()
-        self.webSocket.disconnect()
+        stopPing()
+        webSocket.disconnect()
     }
     
     private func bind(bindModel: BindUserModel) {
@@ -61,10 +63,8 @@ final class SocketManager {
     private func startPing() {
         DispatchQueue.main.async {
             self.pingTimer =
-                Timer.scheduledTimer(timeInterval: 13,
-                                     target: self,
-                                     selector: #selector(self.ping),
-                                     userInfo: nil,
+                Timer.scheduledTimer(timeInterval: 13, target: self,
+                                     selector: #selector(self.ping), userInfo: nil,
                                      repeats: true)
         }
     }
@@ -120,8 +120,11 @@ extension SocketManager: StarscreamDelegate {
             
             guard let linkId = message[0].link_id else { return }
             self.linkId = linkId
-            // TODO: Binding
-            //self.bind
+            self.bind(bindModel: BindUserModel(action: action,
+                                               user_id: self.userId, user_name: self.userName,
+                                               link_id: linkId,
+                                               to_userid: "-1"))
+                                               //to_userid: Constants.Ids.User_Id_She))
         case SocketType.bind.rawValue:
             isSocketConnected = true
             // UserDefaults save isSocketConnect

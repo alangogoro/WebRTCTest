@@ -65,8 +65,8 @@ extension StarscreamSingleton: WebSocketDelegate {
     func didReceive(event: WebSocketEvent,
                     client: WebSocket) {
         switch event {
-        case .connected(let headers):
-            debugPrint("Starscream is connected: \(headers)")
+        case .connected(_):
+            // debugPrint("Starscream is connected: \(_)")
             self.delegate?.didConnect(self)
         case .disconnected(let reason, let code):
             debugPrint("Starscream is disconnected: \(reason) with code: \(code)")
@@ -74,8 +74,11 @@ extension StarscreamSingleton: WebSocketDelegate {
             
         case .text(let text):
             if let data = text.data(using: String.Encoding.utf8) {
-                guard let message: [ReceivedMessageModel] =
-                        data.parseToType([ReceivedMessageModel]()) else { return }
+                guard let message =
+                        data.parseToReceivedMessageModel() else {
+                    debugPrint("Starscream didReceive text, but failed parsing JSON: ", text)
+                    return
+                }
                 self.delegate?.starscream(self, didReceiveMessage: message)
             }
             
@@ -85,6 +88,7 @@ extension StarscreamSingleton: WebSocketDelegate {
         case .pong(_):
             break
         case .ping(_):
+            debugPrint("---- ping")
             break
         case .viabilityChanged(_):
             break
