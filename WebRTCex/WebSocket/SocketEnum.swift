@@ -12,10 +12,9 @@ enum SocketType: String {
     case bind = "bind"
     case say = "say"
     case ping = "ping"
-    
+    case callRemote = "call_remote"
+    case callRemote_callBack = "call_remote_callback"
     /*
-     case CallRemote = "call_remote"
-     case CallRemoteCallBack = "call_remote_callback"
      case ClientOffer = "client_offer"
      case ClientAnswer = "client_answer"
      case ClientCandidate = "client_candidate"

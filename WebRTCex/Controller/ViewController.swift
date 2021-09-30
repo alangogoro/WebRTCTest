@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import SnapKit
+import SDWebImage
 
 class ViewController: UIViewController {
     
@@ -15,11 +17,55 @@ class ViewController: UIViewController {
     var linkId = 0
     var toUserId: String? = Constants.Ids.User_Id_She
     var iceServers: [IceServer]?
-    //var isSocketConnected = false
+    var isConnected: Bool = false {
+        didSet {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                self.makeCallIcon.image = self.isConnected ? #imageLiteral(resourceName: "call_icon") : #imageLiteral(resourceName: "unable_call_icon")
+            }
+        }
+    }
     
     private var chats = [Chat]()
-    
     private var timer: Timer?
+    
+    private lazy var makeCallIcon: UIImageView = {
+        let iv = UIImageView()
+        iv.image = #imageLiteral(resourceName: "unable_call_icon")
+        iv.contentMode = .scaleAspectFill
+        return iv
+    }()
+    
+    private lazy var makeCallButton: UIButton = {
+        let btn = UIButton()
+        btn.backgroundColor = .clear
+        btn.addTarget(self,
+                      action: #selector(handleCall),
+                      for: .touchUpInside)
+        return btn
+    }()
+    
+    private lazy var hangUpIcon: UIImageView = {
+        let iv = UIImageView()
+        iv.image = #imageLiteral(resourceName: "end_call_icon")
+        iv.contentMode = .scaleAspectFill
+        return iv
+    }()
+    
+    private lazy var hangUpButton: UIButton = {
+        let btn = UIButton()
+        btn.backgroundColor = .clear
+        btn.addTarget(self,
+                      action: #selector(handleHangUp),
+                      for: .touchUpInside)
+        return btn
+    }()
+    
+    private lazy var onCallGif: SDAnimatedImageView = {
+        let iv = SDAnimatedImageView()
+        iv.image = SDAnimatedImage(named: "on-call.gif")
+        iv.isHidden = true
+        return iv
+    }()
     
     
     // MARK: - Lifecycle
@@ -35,6 +81,7 @@ class ViewController: UIViewController {
     
     @objc func didEnterBackground() {
         if socketManager != nil /* && checkIsCalling() */ {
+            isConnected = false
             socketManager!.disconnect()
         }
     }
@@ -46,6 +93,7 @@ class ViewController: UIViewController {
     @objc func willEnterForeground() {
         if socketManager != nil /* && checkIsCalling() */ {
             if !socketManager!.isSocketConnected /* checkIsSocketLinkOn() */ {
+                isConnected = false
                 socketManager!.connect()
             }
         }
@@ -63,6 +111,20 @@ class ViewController: UIViewController {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: - Selector
+    @objc private func handleCall() {
+        let callRemote = CallRemoteModel(action: SocketType.callRemote.rawValue,
+                                         user_id: userId,
+                                         to_userid: toUserId!,
+                                         used_phone: UsedPhoneStatus.answer.rawValue,
+                                         to_user_token: "")
+        socketManager?.callRemote(data: callRemote)
+    }
+    
+    @objc func handleHangUp() {
+        
     }
     
     // MARK: - Helper
@@ -112,6 +174,39 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = false
         
         view.backgroundColor = UIColor.systemBackground
+        
+        view.addSubview(makeCallIcon)
+        view.addSubview(makeCallButton)
+        view.addSubview(hangUpIcon)
+        view.addSubview(hangUpButton)
+        view.addSubview(onCallGif)
+        
+        makeCallIcon.snp.makeConstraints {
+            $0.bottom.equalTo(-screenHeight * (124/812))
+            $0.right.equalTo(view.snp.centerX).offset(-screenWidth * (20/375))
+            $0.height.width.equalTo(screenWidth * (72/375))
+        }
+        
+        makeCallButton.snp.makeConstraints {
+            $0.edges.equalTo(makeCallIcon)
+        }
+        
+        hangUpIcon.snp.makeConstraints {
+            $0.bottom.equalTo(-screenHeight * (124/812))
+            $0.left.equalTo(view.snp.centerX).offset(screenWidth * (20/375))
+            $0.height.width.equalTo(screenWidth * (72/375))
+        }
+        
+        hangUpButton.snp.makeConstraints {
+            $0.edges.equalTo(hangUpIcon)
+        }
+        
+        onCallGif.snp.makeConstraints {
+            $0.bottom.equalTo(makeCallIcon.snp.top).offset(-screenHeight * (52/812))
+            $0.centerX.equalTo(view)
+            $0.width.equalTo(screenWidth * (60/375))
+            $0.height.equalTo(screenWidth * (60/375))
+        }
     }
     
     private func sendMessages() {
@@ -122,13 +217,14 @@ class ViewController: UIViewController {
     
     @objc private func send(_ text: String) {
         guard let toUserId = toUserId else { return }
-        let messageModel = SendMessageModel(action: SocketType.say.rawValue,
-                                            user_id: userId,
-                                            user_name: "",
-                                            to_userid: toUserId,
-                                            content: text)
-        self.socketManager?.sendMessage(message: messageModel, onSuccess: { result in
-            // debugPrint("send result = ", result ?? "Failed")
+        let message = SendMessageModel(action: SocketType.say.rawValue,
+                                       user_id: userId,
+                                       user_name: "",
+                                       to_userid: toUserId,
+                                       content: text)
+        self.socketManager?.sendMessage(message: message, onSuccess: { result in
+            debugPrint("send result = ", result ?? "Failed")
+            print(message)
         })
     }
     
@@ -142,7 +238,7 @@ extension ViewController: SocketDelegate {
     }
     
     func didDisconnect(_ socket: SocketManager) {
-        
+        self.isConnected = false
     }
     
     func didLinkOn(_ socket: SocketManager, iceServers: [IceServer]) {
@@ -152,8 +248,10 @@ extension ViewController: SocketDelegate {
     func didBind(_ socket: SocketManager, linkId: Int) {
         debugPrint("SocketManager didBind link_id = \(linkId)")
         self.linkId = linkId
+        self.isConnected = true
         
-        self.sendMessages()
+        //self.sendMessages()
+        
 //        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
 //            self.socketManager?.disconnect()
 //        }
