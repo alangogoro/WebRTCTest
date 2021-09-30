@@ -24,6 +24,11 @@ class ViewController: UIViewController {
             }
         }
     }
+    var isOnCall: Bool = false {
+        didSet {
+            onCallGif.isHidden = isOnCall ? false : true
+        }
+    }
     
     private var chats = [Chat]()
     private var timer: Timer?
@@ -250,11 +255,7 @@ extension ViewController: SocketDelegate {
         self.linkId = linkId
         self.isConnected = true
         
-        //self.sendMessages()
-        
-//        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
-//            self.socketManager?.disconnect()
-//        }
+//        self.sendMessages()
         
         //connectWebRTC()
     }
@@ -276,6 +277,20 @@ extension ViewController: SocketDelegate {
             //self.reloadChatsToBottom()
         }
         debugPrint("SocketManager didReceive Message:", text, time)
+    }
+    
+    func didReceiveCall(_ socket: SocketManager, message: ReceivedMessageModel) {
+        guard let toUserId = message.to_userid else { return }
+        guard let used_phone = message.used_phone else { return }
+        if used_phone == 0 {
+            // 來電並回傳接受
+            self.toUserId = toUserId
+            self.handleCall()
+        } else if used_phone == 1 {
+            // 去電並對方已回傳接受 ➡️ 進入 RTC 通訊
+            debugPrint("SocketManager didReceive CallRemote_CallBack. From id:", toUserId)
+            self.isOnCall = true
+        }
     }
     
 }

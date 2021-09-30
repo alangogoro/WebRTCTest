@@ -17,9 +17,12 @@ struct ReceivedMessageModel: Codable {
     let time: String?
     let media: String?
     let iceserver_config: IceserverConfig?
+    /// 判斷接到了來電
+    let used_phone: Int?
     
     enum CodingKeys: CodingKey {
-        case action, content, link_id, to_userid, category, time, media, iceserver_config }
+        case action, content, link_id, to_userid, category, time, media, iceserver_config,
+             used_phone }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -31,6 +34,7 @@ struct ReceivedMessageModel: Codable {
         time = try? container.decodeIfPresent(String.self, forKey: .time) ?? ""
         media = try? container.decodeIfPresent(String.self, forKey: .media) ?? ""
         iceserver_config = try? container.decodeIfPresent(IceserverConfig.self, forKey: .iceserver_config) ?? nil
+        used_phone = try? container.decodeIfPresent(Int.self, forKey: .used_phone) ?? -1
     }
 }
 

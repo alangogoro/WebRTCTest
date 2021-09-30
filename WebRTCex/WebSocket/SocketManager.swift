@@ -105,20 +105,6 @@ final class SocketManager {
     }
     
     func callRemote(data: CallRemoteModel) {
-        let data_ = ["action": "call_remote",
-                     "user_id": "AO0ZV8X8RX64",
-                     "user_img": "", //Optional("img/profile_0.jpg"),
-                     "user_name": "",//Optional("訪客1"),
-                     "to_userid": "XVU1NP18MT86",
-                     "used_phone": 1,
-                     "media_type": 1,//Optional(1),
-                     "user_voice_fee": 1,//Optional(1),
-                     "user_text_fee": 1,//Optional(1),
-                     "user_video_fee": 1,//Optional(1),
-                     "user_age": 1,//Optional(18),
-                     "to_user_os_type": 2,//Optional(2),
-                     "to_user_token": "",
-                     "connection_mode": "0"] as [String: Any] //Optional("0")]
         do {
             let encodedValue = try encoder.encode(data)
             let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
@@ -126,7 +112,6 @@ final class SocketManager {
                 if result != nil {
                     debugPrint("Call Remote result = \(result!)")
                 }
-                print(data)
             })
         } catch {
             debugPrint("Warning: callRemote Could not encode candidate: \(error)")
@@ -184,8 +169,8 @@ extension SocketManager: StarscreamDelegate {
             // CallRemote will not receiveMessage
             return
         case SocketType.callRemote_callBack.rawValue:
-            debugPrint("SocketManager didReceiveMessage - callRemote_callBack !!")
-            // self.delegate?.didReceiveCall(self, messageData: message[0])
+            // debugPrint("SocketManager didReceiveMessage - callRemote_callBack")
+            self.delegate?.didReceiveCall(self, message: message[0])
             break
         default:
             return
