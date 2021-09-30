@@ -14,6 +14,8 @@ protocol SocketDelegate: AnyObject {
     func didLinkOn(_ socket: SocketManager, iceServers: [IceServer])
     func didBind(_ socket: SocketManager, linkId: Int)
     func didReceivcMessage(_ socket: SocketManager, message: ReceivedMessageModel)
+    
+    func didReceiveCall(_ socket: SocketManager, message: ReceivedMessageModel)
 }
 
 /// StarscreamSingleton 必須處理的內容

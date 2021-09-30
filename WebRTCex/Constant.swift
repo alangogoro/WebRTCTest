@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct Constants {
     
@@ -16,7 +17,18 @@ struct Constants {
     
     struct Ids {
         static let User_Id_He = "AO0ZV8X8RX64"
-        //                      "XVU1NP18MT86" Josh
+        //                      "AO0ZV8X8RX64" Girl-Me
+        //                      "XVU1NP18MT86" Boy- Josh
+        //                      "RDS0H0FE36NE" Girl-Zhiyang
         static let User_Id_She = "RDS0H0FE36NE"
     }
+    
+}
+
+var screenWidth: CGFloat {
+    return UIScreen.main.bounds.width
+}
+
+var screenHeight: CGFloat {
+    return UIScreen.main.bounds.height
 }

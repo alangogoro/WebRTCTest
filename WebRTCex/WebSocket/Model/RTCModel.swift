@@ -36,3 +36,41 @@ struct IceServer: Codable {
         credential = try? container.decodeIfPresent(String.self, forKey: .credential) ?? ""
     }
 }
+
+// MARK: - Socket - CallRemote & Cancel Phone
+struct CallRemoteModel: Codable {
+    let action: String
+    let user_id: String
+    // TODO: - 注意這個參數能否不帶
+    var user_img: String? = "img/profile_0.jpg"
+    var user_name: String? = "訪客1"
+    let to_userid: String
+    //var to_userimg: String?
+    //var to_username: String?
+    let used_phone: Int
+    var media_type: Int? = MediaType.audio.rawValue
+    var user_voice_fee: Int? = 1
+    var user_text_fee: Int? = 1
+    var user_video_fee: Int? = 1
+    var user_age: Int? = 18
+    //var user_gender: String?
+    var to_user_os_type: Int? = UserOsType.iOS.rawValue
+    let to_user_token: String // 對方的 device token（使用於退背時推播來電）
+    var connection_mode: String? = "0" // 0→不玩遊戲 1→遊戲
+    //var time: Int? // cancel_phone 用到
+}
+
+enum UsedPhoneStatus: Int {
+    case answer = 1
+    case reject = 0
+}
+
+enum MediaType: Int {
+    case audio = 1
+    case video = 2
+}
+
+enum UserOsType: Int {
+    case android = 1
+    case iOS = 2
+}

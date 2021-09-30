@@ -6,6 +6,9 @@ target 'WebRTCex' do
   use_frameworks!
 
   # Pods for WebRTCex
+  pod 'SnapKit', '~> 5.0.0'
+  pod 'SDWebImage'
+  
   pod 'Starscream', '~> 4.0.0'
   pod 'GoogleWebRTC'
 

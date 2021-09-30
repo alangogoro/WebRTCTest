@@ -18,7 +18,6 @@ final class SocketManager {
     private var iceServers: [IceServer]?
     private(set) var isSocketConnected: Bool = false
     
-    private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
     
     private var pingTimer = Timer()
@@ -64,9 +63,9 @@ final class SocketManager {
     func sendMessage(message: SendMessageModel, onSuccess: @escaping (String?) -> Void) {
         let sendValue = message
         do {
-            let encodedValue = try self.encoder.encode(sendValue)
+            let encodedValue = try encoder.encode(sendValue)
             let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
-            self.webSocket.send(json: json) { result in
+            webSocket.send(json: json) { result in
                 if result != nil {
                     onSuccess("sent Succcess")
                 }
@@ -102,6 +101,20 @@ final class SocketManager {
             }
         } catch {
             debugPrint("⚠️ Ping could not encode candidate: \(error)")
+        }
+    }
+    
+    func callRemote(data: CallRemoteModel) {
+        do {
+            let encodedValue = try encoder.encode(data)
+            let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
+            webSocket.send(json: json, onSuccess: { result in
+                if result != nil {
+                    debugPrint("Call Remote result = \(result!)")
+                }
+            })
+        } catch {
+            debugPrint("Warning: callRemote Could not encode candidate: \(error)")
         }
     }
     
@@ -152,6 +165,13 @@ extension SocketManager: StarscreamDelegate {
             self.delegate?.didReceivcMessage(self, message: message[0])
         case SocketType.ping.rawValue:
             return
+        case SocketType.callRemote.rawValue:
+            // CallRemote will not receiveMessage
+            return
+        case SocketType.callRemote_callBack.rawValue:
+            // debugPrint("SocketManager didReceiveMessage - callRemote_callBack")
+            self.delegate?.didReceiveCall(self, message: message[0])
+            break
         default:
             return
         }

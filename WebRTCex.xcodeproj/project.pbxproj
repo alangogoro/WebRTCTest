@@ -10,6 +10,8 @@
 		42CE8F8F875160CC5A05FC41 /* Pods_WebRTCex.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 063291210D5E67FA973D8A54 /* Pods_WebRTCex.framework */; };
 		CEACCC612704235800FD8A2B /* RTCModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC602704235800FD8A2B /* RTCModel.swift */; };
 		CEACCC642704488200FD8A2B /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC632704488200FD8A2B /* Chat.swift */; };
+		CEACCC6727059D4100FD8A2B /* on-call.gif in Resources */ = {isa = PBXBuildFile; fileRef = CEACCC6627059D4100FD8A2B /* on-call.gif */; };
+		CEACCC6927059D5500FD8A2B /* spinner.gif in Resources */ = {isa = PBXBuildFile; fileRef = CEACCC6827059D5500FD8A2B /* spinner.gif */; };
 		CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */; };
 		CEB1223F2702FF8A00677BBC /* SocketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223E2702FF8A00677BBC /* SocketModel.swift */; };
 		CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1224027031C0D00677BBC /* Data+Extension.swift */; };
@@ -31,6 +33,8 @@
 		AAAA33F70FD5B7161380127D /* Pods-WebRTCex.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WebRTCex.debug.xcconfig"; path = "Target Support Files/Pods-WebRTCex/Pods-WebRTCex.debug.xcconfig"; sourceTree = "<group>"; };
 		CEACCC602704235800FD8A2B /* RTCModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTCModel.swift; sourceTree = "<group>"; };
 		CEACCC632704488200FD8A2B /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
+		CEACCC6627059D4100FD8A2B /* on-call.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "on-call.gif"; sourceTree = "<group>"; };
+		CEACCC6827059D5500FD8A2B /* spinner.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = spinner.gif; sourceTree = "<group>"; };
 		CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		CEB1223E2702FF8A00677BBC /* SocketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketModel.swift; sourceTree = "<group>"; };
 		CEB1224027031C0D00677BBC /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
@@ -85,6 +89,15 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		CEACCC6527059D1400FD8A2B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				CEACCC6627059D4100FD8A2B /* on-call.gif */,
+				CEACCC6827059D5500FD8A2B /* spinner.gif */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		CEB1223B2702FEE400677BBC /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +133,7 @@
 				CEACCC622704486000FD8A2B /* ViewModel */,
 				CEB775992702F7E300EF4E15 /* Controller */,
 				CEB1223B2702FEE400677BBC /* Extension */,
+				CEACCC6527059D1400FD8A2B /* View */,
 				CEB775852702C81400EF4E15 /* AppDelegate.swift */,
 				CEB775872702C81400EF4E15 /* SceneDelegate.swift */,
 				CEB7758E2702C81700EF4E15 /* Assets.xcassets */,
@@ -217,6 +231,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEACCC6727059D4100FD8A2B /* on-call.gif in Resources */,
+				CEACCC6927059D5500FD8A2B /* spinner.gif in Resources */,
 				CEB775922702C81700EF4E15 /* LaunchScreen.storyboard in Resources */,
 				CEB7758F2702C81700EF4E15 /* Assets.xcassets in Resources */,
 			);
