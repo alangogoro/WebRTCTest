@@ -12,6 +12,7 @@
 		CEACCC642704488200FD8A2B /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC632704488200FD8A2B /* Chat.swift */; };
 		CEACCC6727059D4100FD8A2B /* on-call.gif in Resources */ = {isa = PBXBuildFile; fileRef = CEACCC6627059D4100FD8A2B /* on-call.gif */; };
 		CEACCC6927059D5500FD8A2B /* spinner.gif in Resources */ = {isa = PBXBuildFile; fileRef = CEACCC6827059D5500FD8A2B /* spinner.gif */; };
+		CEACCC6C2705B43E00FD8A2B /* WebRTCSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */; };
 		CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */; };
 		CEB1223F2702FF8A00677BBC /* SocketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223E2702FF8A00677BBC /* SocketModel.swift */; };
 		CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1224027031C0D00677BBC /* Data+Extension.swift */; };
@@ -35,6 +36,7 @@
 		CEACCC632704488200FD8A2B /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		CEACCC6627059D4100FD8A2B /* on-call.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "on-call.gif"; sourceTree = "<group>"; };
 		CEACCC6827059D5500FD8A2B /* spinner.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = spinner.gif; sourceTree = "<group>"; };
+		CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCSingleton.swift; sourceTree = "<group>"; };
 		CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		CEB1223E2702FF8A00677BBC /* SocketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketModel.swift; sourceTree = "<group>"; };
 		CEB1224027031C0D00677BBC /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
@@ -98,6 +100,14 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		CEACCC6A2705B42300FD8A2B /* WebRTC */ = {
+			isa = PBXGroup;
+			children = (
+				CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */,
+			);
+			path = WebRTC;
+			sourceTree = "<group>";
+		};
 		CEB1223B2702FEE400677BBC /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +140,7 @@
 			children = (
 				CEB1224627032FBF00677BBC /* Constant.swift */,
 				CEB7759A2702F7F000EF4E15 /* WebSocket */,
+				CEACCC6A2705B42300FD8A2B /* WebRTC */,
 				CEACCC622704486000FD8A2B /* ViewModel */,
 				CEB775992702F7E300EF4E15 /* Controller */,
 				CEB1223B2702FEE400677BBC /* Extension */,
@@ -291,6 +302,7 @@
 				CEB7758A2702C81400EF4E15 /* ViewController.swift in Sources */,
 				CEB7759E2702FB0500EF4E15 /* StarscreamSingleton.swift in Sources */,
 				CEB775862702C81400EF4E15 /* AppDelegate.swift in Sources */,
+				CEACCC6C2705B43E00FD8A2B /* WebRTCSingleton.swift in Sources */,
 				CEB1224527032D8E00677BBC /* SocketDelegate.swift in Sources */,
 				CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */,
 				CEB122432703222F00677BBC /* SocketEnum.swift in Sources */,
@@ -368,7 +380,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -423,7 +435,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -441,6 +453,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3M26XCRN2K;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = WebRTCex/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -461,6 +474,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3M26XCRN2K;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = WebRTCex/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

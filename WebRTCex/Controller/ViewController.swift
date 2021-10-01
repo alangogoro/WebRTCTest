@@ -13,9 +13,9 @@ class ViewController: UIViewController {
     
     // MARK: - Property
     var socketManager: SocketManager?
-    let userId = Constants.Ids.User_Id_He
+    let userId = Constants.Ids.User_Id_She
     var linkId = 0
-    var toUserId: String? = Constants.Ids.User_Id_She
+    var toUserId: String? = Constants.Ids.User_Id_He
     var iceServers: [IceServer]?
     var isConnected: Bool = false {
         didSet {
