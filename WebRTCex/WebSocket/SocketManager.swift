@@ -162,7 +162,7 @@ extension SocketManager: StarscreamDelegate {
             
             startPing()
         case SocketType.say.rawValue:
-            self.delegate?.didReceivcMessage(self, message: message[0])
+            self.delegate?.didReceiveMessage(self, message: message[0])
         case SocketType.ping.rawValue:
             return
         case SocketType.callRemote.rawValue:

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import WebRTC
 
 /// **SocketManager** 的回傳
 protocol SocketDelegate: AnyObject {
@@ -13,9 +14,12 @@ protocol SocketDelegate: AnyObject {
     func didDisconnect(_ socket: SocketManager)
     func didLinkOn(_ socket: SocketManager, iceServers: [IceServer])
     func didBind(_ socket: SocketManager, linkId: Int)
-    func didReceivcMessage(_ socket: SocketManager, message: ReceivedMessageModel)
+    func didReceiveMessage(_ socket: SocketManager, message: ReceivedMessageModel)
     
     func didReceiveCall(_ socket: SocketManager, message: ReceivedMessageModel)
+    func didReceiveCall(_ socket: SocketManager, receivedRemoteSdp sdp: RTCSessionDescription)
+    func didReceiceCall(_ socket: SocketManager, receivedCandidate candidate: RTCIceCandidate)
+    func didEndCall(_ socket: SocketManager, userId: String, toUserId: String)
 }
 
 /// StarscreamSingleton 必須處理的內容

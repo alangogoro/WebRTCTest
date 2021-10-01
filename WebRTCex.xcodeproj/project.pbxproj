@@ -13,6 +13,7 @@
 		CEACCC6727059D4100FD8A2B /* on-call.gif in Resources */ = {isa = PBXBuildFile; fileRef = CEACCC6627059D4100FD8A2B /* on-call.gif */; };
 		CEACCC6927059D5500FD8A2B /* spinner.gif in Resources */ = {isa = PBXBuildFile; fileRef = CEACCC6827059D5500FD8A2B /* spinner.gif */; };
 		CEACCC6C2705B43E00FD8A2B /* WebRTCSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */; };
+		CEACCC6F2707218100FD8A2B /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC6E2707218100FD8A2B /* Authorization.swift */; };
 		CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */; };
 		CEB1223F2702FF8A00677BBC /* SocketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223E2702FF8A00677BBC /* SocketModel.swift */; };
 		CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1224027031C0D00677BBC /* Data+Extension.swift */; };
@@ -37,6 +38,7 @@
 		CEACCC6627059D4100FD8A2B /* on-call.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "on-call.gif"; sourceTree = "<group>"; };
 		CEACCC6827059D5500FD8A2B /* spinner.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = spinner.gif; sourceTree = "<group>"; };
 		CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCSingleton.swift; sourceTree = "<group>"; };
+		CEACCC6E2707218100FD8A2B /* Authorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorization.swift; sourceTree = "<group>"; };
 		CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		CEB1223E2702FF8A00677BBC /* SocketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketModel.swift; sourceTree = "<group>"; };
 		CEB1224027031C0D00677BBC /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
@@ -91,13 +93,13 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		CEACCC6527059D1400FD8A2B /* View */ = {
+		CEACCC6527059D1400FD8A2B /* Gif */ = {
 			isa = PBXGroup;
 			children = (
 				CEACCC6627059D4100FD8A2B /* on-call.gif */,
 				CEACCC6827059D5500FD8A2B /* spinner.gif */,
 			);
-			path = View;
+			path = Gif;
 			sourceTree = "<group>";
 		};
 		CEACCC6A2705B42300FD8A2B /* WebRTC */ = {
@@ -106,6 +108,14 @@
 				CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */,
 			);
 			path = WebRTC;
+			sourceTree = "<group>";
+		};
+		CEACCC6D2707214E00FD8A2B /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				CEACCC6E2707218100FD8A2B /* Authorization.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 		CEB1223B2702FEE400677BBC /* Extension */ = {
@@ -144,7 +154,8 @@
 				CEACCC622704486000FD8A2B /* ViewModel */,
 				CEB775992702F7E300EF4E15 /* Controller */,
 				CEB1223B2702FEE400677BBC /* Extension */,
-				CEACCC6527059D1400FD8A2B /* View */,
+				CEACCC6D2707214E00FD8A2B /* Helper */,
+				CEACCC6527059D1400FD8A2B /* Gif */,
 				CEB775852702C81400EF4E15 /* AppDelegate.swift */,
 				CEB775872702C81400EF4E15 /* SceneDelegate.swift */,
 				CEB7758E2702C81700EF4E15 /* Assets.xcassets */,
@@ -307,6 +318,7 @@
 				CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */,
 				CEB122432703222F00677BBC /* SocketEnum.swift in Sources */,
 				CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */,
+				CEACCC6F2707218100FD8A2B /* Authorization.swift in Sources */,
 				CEACCC612704235800FD8A2B /* RTCModel.swift in Sources */,
 				CEB775882702C81400EF4E15 /* SceneDelegate.swift in Sources */,
 				CEB1224727032FBF00677BBC /* Constant.swift in Sources */,

@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import SDWebImage
+import WebRTC
 
 class ViewController: UIViewController {
     
@@ -120,6 +121,8 @@ class ViewController: UIViewController {
     
     // MARK: - Selector
     @objc private func handleCall() {
+        guard Authorization.shared.authorizationForMic(self) else { return }
+        
         let callRemote = CallRemoteModel(action: SocketType.callRemote.rawValue,
                                          user_id: userId,
                                          to_userid: toUserId!,
@@ -129,7 +132,7 @@ class ViewController: UIViewController {
     }
     
     @objc func handleHangUp() {
-        
+        isOnCall = false
     }
     
     // MARK: - Helper
@@ -255,12 +258,10 @@ extension ViewController: SocketDelegate {
         self.linkId = linkId
         self.isConnected = true
         
-//        self.sendMessages()
-        
-        //connectWebRTC()
+        // self.sendMessages()
     }
     
-    func didReceivcMessage(_ socket: SocketManager, message: ReceivedMessageModel) {
+    func didReceiveMessage(_ socket: SocketManager, message: ReceivedMessageModel) {
         guard let id = message.to_userid else { return }
         guard let time = message.time else { return }
         guard let text = message.content else { return }
@@ -291,6 +292,18 @@ extension ViewController: SocketDelegate {
             debugPrint("SocketManager didReceive CallRemote_CallBack. From id:", toUserId)
             self.isOnCall = true
         }
+    }
+    
+    func didReceiveCall(_ socket: SocketManager, receivedRemoteSdp sdp: RTCSessionDescription) {
+        
+    }
+    
+    func didReceiceCall(_ socket: SocketManager, receivedCandidate candidate: RTCIceCandidate) {
+        
+    }
+    
+    func didEndCall(_ socket: SocketManager, userId: String, toUserId: String) {
+        // self.isOnCall = false
     }
     
 }
