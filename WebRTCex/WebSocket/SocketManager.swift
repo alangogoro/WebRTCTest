@@ -9,16 +9,16 @@ import Foundation
 
 final class SocketManager {
     
-    private let userId: String
+    let userId: String
     private let userName: String
-    private let webSocket: StarscreamSingleton
+    let webSocket: StarscreamSingleton
     weak var delegate: SocketDelegate?
     
     private var linkId: Int?
     private var iceServers: [IceServer]?
     private(set) var isSocketConnected: Bool = false
     
-    private let encoder = JSONEncoder()
+    let encoder = JSONEncoder()
     
     private var pingTimer = Timer()
     private var pingInterval = TimeInterval(Double(13))

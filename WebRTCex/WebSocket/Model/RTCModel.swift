@@ -70,3 +70,13 @@ enum UserOsType: Int {
     case android = 1
     case iOS = 2
 }
+
+// MARK: - Socket - CreateOffer
+struct OfferAnswerModel: Codable {
+    let action: String
+    let user_id: String
+    var user_img: String? = "img/profile_0.jpg"
+    var user_name: String? = "訪客1"
+    let to_userid: String
+    let info: String
+}

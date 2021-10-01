@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     
     // MARK: - Property
     var socketManager: SocketManager?
+    var webRTC: GoogleWebRTC?
     let userId = Constants.Ids.User_Id_She
     var linkId = 0
     var toUserId: String? = Constants.Ids.User_Id_He
@@ -129,6 +130,9 @@ class ViewController: UIViewController {
                                          used_phone: UsedPhoneStatus.answer.rawValue,
                                          to_user_token: "")
         socketManager?.callRemote(data: callRemote)
+        
+        guard let iceServers = iceServers else { return }
+        webRTC = WebRTCSingleton(iceServers: iceServers)
     }
     
     @objc func handleHangUp() {
@@ -290,6 +294,13 @@ extension ViewController: SocketDelegate {
         } else if used_phone == 1 {
             // 去電並對方已回傳接受 ➡️ 進入 RTC 通訊
             debugPrint("SocketManager didReceive CallRemote_CallBack. From id:", toUserId)
+            
+            self.webRTC?.offer(completion: { sdp in
+                self.socketManager?.send(sdp: sdp,
+                                         action: SocketType.clientOffer.rawValue,
+                                         toUserId: toUserId)
+            })
+            
             self.isOnCall = true
         }
     }

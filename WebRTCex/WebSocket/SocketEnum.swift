@@ -15,9 +15,9 @@ enum SocketType: String {
     case callRemote = "call_remote"
     case callRemote_callBack = "call_remote_callback"
     
+    case clientOffer = "client_offer"
+    case clientAnswer = "client_answer"
     /*
-     case ClientOffer = "client_offer"
-     case ClientAnswer = "client_answer"
      case ClientCandidate = "client_candidate"
      case CancelPhone = "cancel_phone"
      case ReadComplete = "read_complete"

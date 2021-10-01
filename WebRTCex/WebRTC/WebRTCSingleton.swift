@@ -8,14 +8,7 @@
 import Foundation
 import WebRTC
 
-/// WebRTCSingleton 的回傳
-protocol WebRTCDelegate: AnyObject {
-    func webRTC(_ webRTC: WebRTCSingleton, didDiscoverLocalCandidate candidate: RTCIceCandidate)
-    func webRTC(_ webRTC: WebRTCSingleton, didChangeConnectionState state: RTCIceConnectionState)
-    func webRTC(_ webRTC: WebRTCSingleton, dataChannel: RTCDataChannel, didReceiveData data: Data)
-}
-
-final class WebRTCSingleton: NSObject {
+final class WebRTCSingleton: NSObject, GoogleWebRTC {
     
     // MARK: - Property
     /** The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
