@@ -8,6 +8,7 @@
 import Foundation
 import WebRTC
 
+/// WebRTCSingleton 的回傳
 protocol WebRTCDelegate: AnyObject {
     func webRTCClient(_ webRTC: WebRTCSingleton, didDiscoverLocalCandidate candidate: RTCIceCandidate)
     func webRTCClient(_ webRTC: WebRTCSingleton, didChangeConnectionState state: RTCIceConnectionState)
@@ -60,18 +61,19 @@ final class WebRTCSingleton: NSObject {
         let config = RTCConfiguration()
         
         if iceServers.count > 0 {
-        iceServers.forEach { server in
-            if let urlName = server.username, urlName != "" {
-                let urlString = server.urls!
-                let credential = server.credential!
-                config.iceServers.append(RTCIceServer(urlStrings: [urlString],
-                                                      username: urlName,
-                                                      credential: credential))
-            } else {
-                let urlString = server.urls
-                config.iceServers.append(RTCIceServer(urlStrings: [urlString!]))
+            iceServers.forEach { server in
+                if let urlName = server.username, urlName != "" {
+                    let urlString = server.urls!
+                    let credential = server.credential!
+                    config.iceServers.append(RTCIceServer(urlStrings: [urlString],
+                                                          username: urlName,
+                                                          credential: credential))
+                } else {
+                    let urlString = server.urls
+                    config.iceServers.append(RTCIceServer(urlStrings: [urlString!]))
+                }
             }
-        }}
+        }
         
         // Unified plan is more superior than planB
         config.sdpSemantics = .unifiedPlan
@@ -260,3 +262,7 @@ extension WebRTCSingleton: RTCPeerConnectionDelegate {
     }
     
 }
+
+// MARK:- Audio control
+
+//extension WebRTCClient: RTCDataChannelDelegate { }
