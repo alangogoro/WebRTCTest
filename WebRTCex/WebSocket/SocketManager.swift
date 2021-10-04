@@ -127,7 +127,7 @@ final class SocketManager {
         do {
             let encodedValue = try encoder.encode(offerAnswerValue)
             let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
-            debugPrint("json = ", json)
+            // debugPrint("json = ", json)
             webSocket.send(json: json) { result in
                 if result != nil {
                     debugPrint("send rtcSdp result = \(String(describing: result))")
@@ -135,9 +135,55 @@ final class SocketManager {
                     debugPrint("sent rtcSdp failed")
                 }
             }
-        }
-        catch {
+        } catch {
             debugPrint("⚠️ Could not encode SDP: \(error)")
+        }
+    }
+    
+    func send(candidate rtcIceCandidate: RTCIceCandidate, toUserId: String) {
+        let candidateValue = CandidateModel(action: SocketType.clientCandidate.rawValue,
+                                            user_id: userId,
+                                            ice_sdp: rtcIceCandidate.sdp,
+                                            ice_index: Int(rtcIceCandidate.sdpMLineIndex),
+                                            ice_mid: rtcIceCandidate.sdpMid!)
+        do {
+            let encodedValue = try encoder.encode(candidateValue)
+            let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
+            self.webSocket.send(json: json) { result in
+                if result != nil {
+                    debugPrint("send rtcIceCandidate result = \(String(describing: result))")
+                } else {
+                    debugPrint("sent rtcIceCandidate failed")
+                }
+            }
+        } catch {
+            debugPrint("⚠️ Could not encode Candidate: \(error)")
+        }
+    }
+    
+    func endCall(data: CallRemoteModel, onSuccess: @escaping (String?) -> Void) {
+        do {
+            let encodedValue = try encoder.encode(data)
+            let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
+            webSocket.send(json: json, onSuccess: { result in
+                if result != nil {
+                    debugPrint("Call Remote result = \(result!)")
+                }
+            })
+        } catch {
+            debugPrint("⚠️ CallRemote could not encode candidate: \(error)")
+        }
+        
+        do {
+            let encodedValue = try self.encoder.encode(data)
+            let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
+            webSocket.send(json: json) { result in
+                if result != nil {
+                    debugPrint("Call Remote result = \(result!)")
+                }
+            }
+        } catch {
+            debugPrint("⚠️ EndCall could not encode CallRemoteModel: \(error)")
         }
     }
     
@@ -194,7 +240,6 @@ extension SocketManager: StarscreamDelegate {
         case SocketType.callRemote_callBack.rawValue:
             self.delegate?.didReceiveCall(self, message: message[0])
         case SocketType.clientOffer.rawValue:
-            // TODO: 沒收到 info（來電方的 SDP）
             if let sdp = message[0].info {
                 let rtcSdp = RTCSessionDescription(type: RTCSdpType.offer, sdp: sdp)
                 self.delegate?.didReceiveCall(self, receivedRemoteSdp: rtcSdp)
@@ -205,7 +250,21 @@ extension SocketManager: StarscreamDelegate {
             if let sdp = message[0].info {
                 let rtcSdp = RTCSessionDescription(type: RTCSdpType.answer, sdp: sdp)
                 self.delegate?.didReceiveCall(self, receivedRemoteSdp: rtcSdp)
+            } else {
+                debugPrint("found client_answer SDP info NIL. Message: ", message)
             }
+        case SocketType.clientCandidate.rawValue:
+            // check if logid property exists
+            self.delegate?
+                .didReceiveCall(self,
+                                receivedCandidate: RTCIceCandidate(sdp: message[0].ice_sdp!,
+                                                                   sdpMLineIndex: Int32(message[0].ice_index!),
+                                                                   sdpMid: message[0].ice_mid!))
+        // TODO: - didEndCall
+        case SocketType.cancelPhone.rawValue:
+            self.delegate?.didEndCall(self,
+                                      userId: message[0].user_id!,
+                                      toUserId: message[0].to_userid!)
         default:
             return
         }

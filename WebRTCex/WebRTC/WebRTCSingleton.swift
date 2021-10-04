@@ -98,8 +98,7 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
             guard let sdp = sdp else { return }
             guard error == nil else {
                 debugPrint("offer sdp error = ", error!)
-                return
-            }
+                return }
             self.peerConnection.setLocalDescription(sdp, completionHandler: { error in
                 completion(sdp)
             })
@@ -112,7 +111,9 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
                                              optionalConstraints: nil)
         self.peerConnection.answer(for: constrains) { (sdp, error) in
             guard let sdp = sdp else { return }
-            debugPrint("Answer Local SDP = ", sdp)
+            guard error == nil else {
+                debugPrint("offer sdp error = ", error!)
+                return }
             //设置本地 sdp
             self.peerConnection.setLocalDescription(sdp, completionHandler: { error in
                 //发送出去 sdp

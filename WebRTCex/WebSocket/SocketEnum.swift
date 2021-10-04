@@ -10,16 +10,17 @@ import Foundation
 enum SocketType: String {
     case link = "link_on"
     case bind = "bind"
-    case say = "say"
+    case say  = "say"
     case ping = "ping"
+    
     case callRemote = "call_remote"
     case callRemote_callBack = "call_remote_callback"
     
-    case clientOffer = "client_offer"
-    case clientAnswer = "client_answer"
+    case clientOffer     = "client_offer"
+    case clientAnswer    = "client_answer"
+    case clientCandidate = "client_candidate"
+    case cancelPhone = "cancel_phone"
     /*
-     case ClientCandidate = "client_candidate"
-     case CancelPhone = "cancel_phone"
      case ReadComplete = "read_complete"
      case CheckCalling = "check_calling"
      */
