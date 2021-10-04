@@ -14,6 +14,7 @@
 		CEACCC6927059D5500FD8A2B /* spinner.gif in Resources */ = {isa = PBXBuildFile; fileRef = CEACCC6827059D5500FD8A2B /* spinner.gif */; };
 		CEACCC6C2705B43E00FD8A2B /* WebRTCSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */; };
 		CEACCC6F2707218100FD8A2B /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC6E2707218100FD8A2B /* Authorization.swift */; };
+		CEACCC712707326000FD8A2B /* WebRTCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC702707326000FD8A2B /* WebRTCDelegate.swift */; };
 		CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */; };
 		CEB1223F2702FF8A00677BBC /* SocketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223E2702FF8A00677BBC /* SocketModel.swift */; };
 		CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1224027031C0D00677BBC /* Data+Extension.swift */; };
@@ -39,6 +40,7 @@
 		CEACCC6827059D5500FD8A2B /* spinner.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = spinner.gif; sourceTree = "<group>"; };
 		CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCSingleton.swift; sourceTree = "<group>"; };
 		CEACCC6E2707218100FD8A2B /* Authorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorization.swift; sourceTree = "<group>"; };
+		CEACCC702707326000FD8A2B /* WebRTCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WebRTCDelegate.swift; path = "../../../../../Documents/iOS-2/03_Exercises/WebRTCDelegate.swift"; sourceTree = "<group>"; };
 		CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		CEB1223E2702FF8A00677BBC /* SocketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketModel.swift; sourceTree = "<group>"; };
 		CEB1224027031C0D00677BBC /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 		CEACCC6A2705B42300FD8A2B /* WebRTC */ = {
 			isa = PBXGroup;
 			children = (
+				CEACCC702707326000FD8A2B /* WebRTCDelegate.swift */,
 				CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */,
 			);
 			path = WebRTC;
@@ -310,6 +313,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEACCC642704488200FD8A2B /* Chat.swift in Sources */,
+				CEACCC712707326000FD8A2B /* WebRTCDelegate.swift in Sources */,
 				CEB7758A2702C81400EF4E15 /* ViewController.swift in Sources */,
 				CEB7759E2702FB0500EF4E15 /* StarscreamSingleton.swift in Sources */,
 				CEB775862702C81400EF4E15 /* AppDelegate.swift in Sources */,

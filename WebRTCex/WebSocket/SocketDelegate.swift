@@ -18,7 +18,7 @@ protocol SocketDelegate: AnyObject {
     
     func didReceiveCall(_ socket: SocketManager, message: ReceivedMessageModel)
     func didReceiveCall(_ socket: SocketManager, receivedRemoteSdp sdp: RTCSessionDescription)
-    func didReceiceCall(_ socket: SocketManager, receivedCandidate candidate: RTCIceCandidate)
+    func didReceiveCall(_ socket: SocketManager, receivedCandidate candidate: RTCIceCandidate)
     func didEndCall(_ socket: SocketManager, userId: String, toUserId: String)
 }
 

@@ -51,9 +51,9 @@ struct CallRemoteModel: Codable {
     var user_video_fee: Int? = 1
     var user_age: Int? = 18
     var to_user_os_type: Int? = UserOsType.iOS.rawValue
-    let to_user_token: String // 對方的 device token（使用於退背時推播來電）
+    var to_user_token: String? = ""    // 對方的 device token（使用於退背時推播來電）
     var connection_mode: String? = "0" // 0→不玩遊戲 1→遊戲
-    //var time: Int? // cancel_phone 使用
+    var time: Int? = 0 // cancel_phone 使用
 }
 
 enum UsedPhoneStatus: Int {
@@ -69,4 +69,26 @@ enum MediaType: Int {
 enum UserOsType: Int {
     case android = 1
     case iOS = 2
+}
+
+// MARK: - WebRTC - Create Offer or Answer
+struct OfferAnswerModel: Codable {
+    let action: String
+    let user_id: String
+    var user_img: String? = "img/profile_0.jpg"
+    var user_name: String? = "訪客1"
+    let to_userid: String
+    let info: String
+}
+
+// MARK: - WebRTC - Candidate
+struct CandidateModel: Codable {
+    var action: String
+    var user_id: String
+    var user_img: String? = "img/profile_0.jpg"
+    var user_name: String? = "訪客1"
+    var to_userid: String?
+    var ice_sdp: String
+    var ice_index: Int
+    var ice_mid: String
 }

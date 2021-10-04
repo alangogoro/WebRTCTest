@@ -6,19 +6,20 @@
 //
 
 import Foundation
+import WebRTC
 
 final class SocketManager {
     
-    private let userId: String
+    let userId: String
     private let userName: String
-    private let webSocket: StarscreamSingleton
+    let webSocket: StarscreamSingleton
     weak var delegate: SocketDelegate?
     
     private var linkId: Int?
     private var iceServers: [IceServer]?
     private(set) var isSocketConnected: Bool = false
     
-    private let encoder = JSONEncoder()
+    let encoder = JSONEncoder()
     
     private var pingTimer = Timer()
     private var pingInterval = TimeInterval(Double(13))
@@ -114,7 +115,75 @@ final class SocketManager {
                 }
             })
         } catch {
-            debugPrint("Warning: callRemote Could not encode candidate: \(error)")
+            debugPrint("⚠️ callRemote Could not encode candidate: \(error)")
+        }
+    }
+    
+    func send(action: String, sdp rtcSdp: RTCSessionDescription, toUserId: String) {
+        let offerAnswerValue = OfferAnswerModel(action: action,
+                                                user_id: userId,
+                                                to_userid: toUserId,
+                                                info: rtcSdp.sdp)
+        do {
+            let encodedValue = try encoder.encode(offerAnswerValue)
+            let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
+            // debugPrint("json = ", json)
+            webSocket.send(json: json) { result in
+                if result != nil {
+                    debugPrint("send rtcSdp result = \(String(describing: result))")
+                } else {
+                    debugPrint("sent rtcSdp failed")
+                }
+            }
+        } catch {
+            debugPrint("⚠️ Could not encode SDP: \(error)")
+        }
+    }
+    
+    func send(candidate rtcIceCandidate: RTCIceCandidate, toUserId: String) {
+        let candidateValue = CandidateModel(action: SocketType.clientCandidate.rawValue,
+                                            user_id: userId,
+                                            ice_sdp: rtcIceCandidate.sdp,
+                                            ice_index: Int(rtcIceCandidate.sdpMLineIndex),
+                                            ice_mid: rtcIceCandidate.sdpMid!)
+        do {
+            let encodedValue = try encoder.encode(candidateValue)
+            let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
+            self.webSocket.send(json: json) { result in
+                if result != nil {
+                    debugPrint("send rtcIceCandidate result = \(String(describing: result))")
+                } else {
+                    debugPrint("sent rtcIceCandidate failed")
+                }
+            }
+        } catch {
+            debugPrint("⚠️ Could not encode Candidate: \(error)")
+        }
+    }
+    
+    func endCall(data: CallRemoteModel, onSuccess: @escaping (String?) -> Void) {
+        do {
+            let encodedValue = try encoder.encode(data)
+            let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
+            webSocket.send(json: json, onSuccess: { result in
+                if result != nil {
+                    debugPrint("Call Remote result = \(result!)")
+                }
+            })
+        } catch {
+            debugPrint("⚠️ CallRemote could not encode candidate: \(error)")
+        }
+        
+        do {
+            let encodedValue = try self.encoder.encode(data)
+            let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
+            webSocket.send(json: json) { result in
+                if result != nil {
+                    debugPrint("Call Remote result = \(result!)")
+                }
+            }
+        } catch {
+            debugPrint("⚠️ EndCall could not encode CallRemoteModel: \(error)")
         }
     }
     
@@ -169,9 +238,33 @@ extension SocketManager: StarscreamDelegate {
             // CallRemote will not receiveMessage
             return
         case SocketType.callRemote_callBack.rawValue:
-            // debugPrint("SocketManager didReceiveMessage - callRemote_callBack")
             self.delegate?.didReceiveCall(self, message: message[0])
-            break
+        case SocketType.clientOffer.rawValue:
+            if let sdp = message[0].info {
+                let rtcSdp = RTCSessionDescription(type: RTCSdpType.offer, sdp: sdp)
+                self.delegate?.didReceiveCall(self, receivedRemoteSdp: rtcSdp)
+            } else {
+                debugPrint("found client_offer SDP info NIL. Message: ", message)
+            }
+        case SocketType.clientAnswer.rawValue:
+            if let sdp = message[0].info {
+                let rtcSdp = RTCSessionDescription(type: RTCSdpType.answer, sdp: sdp)
+                self.delegate?.didReceiveCall(self, receivedRemoteSdp: rtcSdp)
+            } else {
+                debugPrint("found client_answer SDP info NIL. Message: ", message)
+            }
+        case SocketType.clientCandidate.rawValue:
+            // check if logid property exists
+            self.delegate?
+                .didReceiveCall(self,
+                                receivedCandidate: RTCIceCandidate(sdp: message[0].ice_sdp!,
+                                                                   sdpMLineIndex: Int32(message[0].ice_index!),
+                                                                   sdpMid: message[0].ice_mid!))
+        // TODO: - didEndCall
+        case SocketType.cancelPhone.rawValue:
+            self.delegate?.didEndCall(self,
+                                      userId: message[0].user_id!,
+                                      toUserId: message[0].to_userid!)
         default:
             return
         }

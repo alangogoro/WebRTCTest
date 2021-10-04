@@ -8,14 +8,7 @@
 import Foundation
 import WebRTC
 
-/// WebRTCSingleton 的回傳
-protocol WebRTCDelegate: AnyObject {
-    func webRTC(_ webRTC: WebRTCSingleton, didDiscoverLocalCandidate candidate: RTCIceCandidate)
-    func webRTC(_ webRTC: WebRTCSingleton, didChangeConnectionState state: RTCIceConnectionState)
-    func webRTC(_ webRTC: WebRTCSingleton, dataChannel: RTCDataChannel, didReceiveData data: Data)
-}
-
-final class WebRTCSingleton: NSObject {
+final class WebRTCSingleton: NSObject, GoogleWebRTC {
     
     // MARK: - Property
     /** The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
@@ -92,18 +85,20 @@ final class WebRTCSingleton: NSObject {
         
         super.init()
         self.createMediaSenders()
-        self.configureAudioSession()
+        self.configureAudioSession_Grey()
         self.peerConnection.delegate = self
     }
     
     // MARK: Signaling
     /// 获取本地 SDP (Session Description Protocol) 用来发送给 socket 服务器
     func offer(completion: @escaping (_ sdp: RTCSessionDescription) -> Void) {
-        let constrains = RTCMediaConstraints(mandatoryConstraints: self.mediaConstrains,
+        let constrains = RTCMediaConstraints(mandatoryConstraints: mediaConstrains,
                                              optionalConstraints: nil)
-        self.peerConnection.offer(for: constrains) { (sdp, error) in
+        peerConnection.offer(for: constrains) { (sdp, error) in
             guard let sdp = sdp else { return }
-            
+            guard error == nil else {
+                debugPrint("offer sdp error = ", error!)
+                return }
             self.peerConnection.setLocalDescription(sdp, completionHandler: { error in
                 completion(sdp)
             })
@@ -114,9 +109,11 @@ final class WebRTCSingleton: NSObject {
     func answer(completion: @escaping (_ sdp: RTCSessionDescription) -> Void) {
         let constrains = RTCMediaConstraints(mandatoryConstraints: self.mediaConstrains,
                                              optionalConstraints: nil)
-        
         self.peerConnection.answer(for: constrains) { (sdp, error) in
             guard let sdp = sdp else { return }
+            guard error == nil else {
+                debugPrint("offer sdp error = ", error!)
+                return }
             //设置本地 sdp
             self.peerConnection.setLocalDescription(sdp, completionHandler: { error in
                 //发送出去 sdp
