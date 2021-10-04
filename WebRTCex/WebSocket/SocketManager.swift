@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import WebRTC
 
 final class SocketManager {
     
@@ -114,7 +115,29 @@ final class SocketManager {
                 }
             })
         } catch {
-            debugPrint("Warning: callRemote Could not encode candidate: \(error)")
+            debugPrint("⚠️ callRemote Could not encode candidate: \(error)")
+        }
+    }
+    
+    func send(action: String, sdp rtcSdp: RTCSessionDescription, toUserId: String) {
+        let offerAnswerValue = OfferAnswerModel(action: action,
+                                                user_id: userId,
+                                                to_userid: toUserId,
+                                                info: rtcSdp.sdp)
+        do {
+            let encodedValue = try encoder.encode(offerAnswerValue)
+            let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
+            debugPrint("json = ", json)
+            webSocket.send(json: json) { result in
+                if result != nil {
+                    debugPrint("send rtcSdp result = \(String(describing: result))")
+                } else {
+                    debugPrint("sent rtcSdp failed")
+                }
+            }
+        }
+        catch {
+            debugPrint("⚠️ Could not encode SDP: \(error)")
         }
     }
     
@@ -169,9 +192,20 @@ extension SocketManager: StarscreamDelegate {
             // CallRemote will not receiveMessage
             return
         case SocketType.callRemote_callBack.rawValue:
-            // debugPrint("SocketManager didReceiveMessage - callRemote_callBack")
             self.delegate?.didReceiveCall(self, message: message[0])
-            break
+        case SocketType.clientOffer.rawValue:
+            // TODO: 沒收到 info（來電方的 SDP）
+            if let sdp = message[0].info {
+                let rtcSdp = RTCSessionDescription(type: RTCSdpType.offer, sdp: sdp)
+                self.delegate?.didReceiveCall(self, receivedRemoteSdp: rtcSdp)
+            } else {
+                debugPrint("found client_offer SDP info NIL. Message: ", message)
+            }
+        case SocketType.clientAnswer.rawValue:
+            if let sdp = message[0].info {
+                let rtcSdp = RTCSessionDescription(type: RTCSdpType.answer, sdp: sdp)
+                self.delegate?.didReceiveCall(self, receivedRemoteSdp: rtcSdp)
+            }
         default:
             return
         }

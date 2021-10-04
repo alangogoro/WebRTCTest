@@ -19,6 +19,8 @@ struct ReceivedMessageModel: Codable {
     let iceserver_config: IceserverConfig?
     /// 判斷接到了來電
     let used_phone: Int?
+    /// 對方的 WebRTC `local SessionDescription` string
+    var info: String?
     
     enum CodingKeys: CodingKey {
         case action, content, link_id, to_userid, category, time, media, iceserver_config,

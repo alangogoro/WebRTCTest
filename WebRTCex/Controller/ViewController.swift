@@ -14,10 +14,10 @@ class ViewController: UIViewController {
     
     // MARK: - Property
     var socketManager: SocketManager?
-    var webRTC: GoogleWebRTC?
-    let userId = Constants.Ids.User_Id_She
+    var googleWebRTC: GoogleWebRTC?
+    let userId = Constants.Ids.User_Id_He
     var linkId = 0
-    var toUserId: String? = Constants.Ids.User_Id_He
+    var toUserId: String? = Constants.Ids.User_Id_She
     var iceServers: [IceServer]?
     var isConnected: Bool = false {
         didSet {
@@ -124,18 +124,24 @@ class ViewController: UIViewController {
     @objc private func handleCall() {
         guard Authorization.shared.authorizationForMic(self) else { return }
         
+        guard let toUserId = toUserId else { return }
         let callRemote = CallRemoteModel(action: SocketType.callRemote.rawValue,
                                          user_id: userId,
-                                         to_userid: toUserId!,
+                                         to_userid: toUserId,
                                          used_phone: UsedPhoneStatus.answer.rawValue,
                                          to_user_token: "")
         socketManager?.callRemote(data: callRemote)
         
         guard let iceServers = iceServers else { return }
-        webRTC = WebRTCSingleton(iceServers: iceServers)
+        googleWebRTC = WebRTCSingleton(iceServers: iceServers)
+        // googleWebRTC?.delegate = self
+        
+        isOnCall = true
     }
     
     @objc func handleHangUp() {
+        googleWebRTC?.disconnect()
+        
         isOnCall = false
     }
     
@@ -185,7 +191,7 @@ class ViewController: UIViewController {
         navigationItem.title = "Real-Time Communications"
         navigationController?.navigationBar.prefersLargeTitles = false
         
-        view.backgroundColor = UIColor.systemBackground
+        view.backgroundColor = .white
         
         view.addSubview(makeCallIcon)
         view.addSubview(makeCallButton)
@@ -295,18 +301,30 @@ extension ViewController: SocketDelegate {
             // 去電並對方已回傳接受 ➡️ 進入 RTC 通訊
             debugPrint("SocketManager didReceive CallRemote_CallBack. From id:", toUserId)
             
-            self.webRTC?.offer(completion: { sdp in
-                self.socketManager?.send(sdp: sdp,
-                                         action: SocketType.clientOffer.rawValue,
+            self.googleWebRTC?.offer(completion: { sdp in
+                self.socketManager?.send(action: SocketType.clientOffer.rawValue,
+                                         sdp: sdp,
                                          toUserId: toUserId)
             })
-            
-            self.isOnCall = true
         }
     }
     
     func didReceiveCall(_ socket: SocketManager, receivedRemoteSdp sdp: RTCSessionDescription) {
-        
+        self.googleWebRTC?.set(remoteSdp: sdp) { error in
+            guard error != nil else { debugPrint("setRemote SDP error: ", error!); return }
+            switch sdp.type {
+            case .offer:
+                self.googleWebRTC?.answer(completion: { localSdp in
+                    self.socketManager?.send(action: SocketType.clientAnswer.rawValue,
+                                             sdp: localSdp,
+                                             toUserId: self.toUserId!)
+                })
+            case .answer:
+                return
+            default:
+                return
+            }
+        }
     }
     
     func didReceiceCall(_ socket: SocketManager, receivedCandidate candidate: RTCIceCandidate) {
