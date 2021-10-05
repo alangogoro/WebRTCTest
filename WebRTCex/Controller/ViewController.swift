@@ -27,7 +27,7 @@ class ViewController: UIViewController {
     var isOnCall: Bool = false {
         didSet {
             DispatchQueue.main.async {
-                UIView.animate(withDuration: 0.8) {
+                //UIView.animate(withDuration: 0.8) {
                     self.onCallGif.isHidden = self.isOnCall ? false : true
                     
                     self.makeCallIcon.snp.updateConstraints {
@@ -49,7 +49,7 @@ class ViewController: UIViewController {
                         }
                     }
                     self.view.layoutIfNeeded()
-                }
+                //}
             }
         }
     }
@@ -400,7 +400,7 @@ extension ViewController: WebRTCDelegate {
     func webRTC(_ webRTC: WebRTCSingleton, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
         // debugPrint("didDiscoverLocalCandidate = \(candidate.sdp)")
         self.socketManager?.send(candidate: candidate, toUserId: toUserId!)
-    }
+    }//after SDP
     
     func webRTC(_ webRTC: WebRTCSingleton, didChangeConnectionState state: RTCIceConnectionState) {
         switch state {

@@ -10,16 +10,17 @@ import WebRTC
 
 final class SocketManager {
     
-    let userId: String
+    private let userId: String
     private let userName: String
-    let webSocket: StarscreamSingleton
+    private let webSocket: StarscreamSingleton
     weak var delegate: SocketDelegate?
     
     private var linkId: Int?
     private var iceServers: [IceServer]?
     private(set) var isSocketConnected: Bool = false
     
-    let encoder = JSONEncoder()
+    private let encoder = JSONEncoder()
+    private let decoder = JSONDecoder()
     
     private var pingTimer = Timer()
     private var pingInterval = TimeInterval(Double(13))
@@ -260,13 +261,30 @@ extension SocketManager: StarscreamDelegate {
                                 receivedCandidate: RTCIceCandidate(sdp: message[0].ice_sdp!,
                                                                    sdpMLineIndex: Int32(message[0].ice_index!),
                                                                    sdpMid: message[0].ice_mid!))
-        // TODO: - didEndCall
+        // NOTE: - didEndCall
         case SocketType.cancelPhone.rawValue:
             self.delegate?.didEndCall(self,
                                       userId: message[0].user_id!,
                                       toUserId: message[0].to_userid!)
         default:
             return
+        }
+    }
+    
+    func starscream(_ webSocket: StarscreamWebSocket, didReceiveData data: Data) {
+        let message: Message
+        do {
+            message = try decoder.decode(Message.self, from: data)
+        } catch {
+            debugPrint("")
+            return
+        }
+        
+        switch message {
+        case .candidate(let iceCandidate):
+            self.delegate?.didReceiveCall(self, receivedCandidate: iceCandidate.rtcIceCandidate)
+        case .sdp(let sessionDescription):
+            self.delegate?.didReceiveCall(self, receivedRemoteSdp: sessionDescription.rtcSessionDescription)
         }
     }
     

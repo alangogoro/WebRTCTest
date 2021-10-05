@@ -87,6 +87,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		CE5095D2270C038700388CC1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				CEACCC602704235800FD8A2B /* RTCModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		CEACCC622704486000FD8A2B /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -107,6 +115,7 @@
 		CEACCC6A2705B42300FD8A2B /* WebRTC */ = {
 			isa = PBXGroup;
 			children = (
+				CE5095D2270C038700388CC1 /* Model */,
 				CEACCC702707326000FD8A2B /* WebRTCDelegate.swift */,
 				CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */,
 			);
@@ -192,7 +201,6 @@
 			isa = PBXGroup;
 			children = (
 				CEB1223E2702FF8A00677BBC /* SocketModel.swift */,
-				CEACCC602704235800FD8A2B /* RTCModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

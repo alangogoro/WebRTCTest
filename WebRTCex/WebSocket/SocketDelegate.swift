@@ -36,5 +36,6 @@ protocol StarscreamDelegate: AnyObject {
     func didConnect(_ webSocket: StarscreamWebSocket)
     func didDisconnect(_ webSocket: StarscreamWebSocket)
     func starscream(_ webSocket: StarscreamWebSocket, didReceiveMessage message: [ReceivedMessageModel])
+    func starscream(_ webSocket: StarscreamWebSocket, didReceiveData data: Data)
     func starscream(_ webSocket: StarscreamWebSocket, didReceiveError error: Error)
 }

@@ -17,8 +17,7 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
         RTCInitializeSSL()
         let videoEncoderFactory = RTCDefaultVideoEncoderFactory()
         let videoDecoderFactory = RTCDefaultVideoDecoderFactory()
-        // videoEncoderFactory.preferredCodec = getSupportedVideoEncoder(factory: videoEncoderFactory) Grey
-        videoEncoderFactory.preferredCodec = RTCVideoCodecInfo(name: kRTCVp8CodecName)
+        videoEncoderFactory.preferredCodec = RTCVideoCodecInfo(name: kRTCVideoCodecVp8Name)
         
         return RTCPeerConnectionFactory(encoderFactory: videoEncoderFactory, decoderFactory: videoDecoderFactory)
     }()
@@ -36,10 +35,10 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
     private var localVideoTrack: RTCVideoTrack?
     private var remoteVideoTrack: RTCVideoTrack?
     
-    // private var localDataChannel: RTCDataChannel?//強制寫死
+    private var localDataChannel: RTCDataChannel?//強制寫死
     private var remoteDataChannel: RTCDataChannel?
     
-    // private var remoteAudioTrack: RTCAudioTrack?
+    //private var remoteAudioTrack: RTCAudioTrack?
     // private var localAudioTrack: RTCAudioTrack?
     
     //private var localTextDataChannel: RTCDataChannel?
@@ -80,24 +79,27 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
         let constraints =
             RTCMediaConstraints(mandatoryConstraints: nil,
                                 optionalConstraints: ["DtlsSrtpKeyAgreement": kRTCMediaConstraintsValueTrue])
-        self.peerConnection = WebRTCSingleton.factory
-            .peerConnection(with: config, constraints: constraints, delegate: nil)
+        self.peerConnection = WebRTCSingleton.factory.peerConnection(with: config,
+                                                                     constraints: constraints,
+                                                                     delegate: nil)
         
         super.init()
         self.createMediaSenders()
-        self.configureAudioSession_Grey()
+        self.configureAudioSession() //self.configureAudioSession_Grey()
         self.peerConnection.delegate = self
     }
     
-    // MARK: Signaling
+    
+    // MARK: Signaling - 信令通信
     /// 获取本地 SDP (Session Description Protocol) 用来发送给 socket 服务器
     func offer(completion: @escaping (_ sdp: RTCSessionDescription) -> Void) {
-        let constrains = RTCMediaConstraints(mandatoryConstraints: mediaConstrains,
+        let constrains = RTCMediaConstraints(mandatoryConstraints: self.mediaConstrains,
                                              optionalConstraints: nil)
-        peerConnection.offer(for: constrains) { (sdp, error) in
+        
+        self.peerConnection.offer(for: constrains) { (sdp, error) in
             guard let sdp = sdp else { return }
             guard error == nil else {
-                debugPrint("offer sdp error = ", error!)
+                debugPrint("Signaling Offer sdp error = ", error!)
                 return }
             self.peerConnection.setLocalDescription(sdp, completionHandler: { error in
                 completion(sdp)
@@ -136,6 +138,7 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
         self.peerConnection.add(remoteCandidate)
     }
     
+    
     // MARK: Media
     func startCaptureLocalVideo(renderer: RTCVideoRenderer) {
         guard let capturer = self.videoCapturer as? RTCCameraVideoCapturer else { return }
@@ -173,7 +176,7 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
             
             // find target device
             let devicies = RTCCameraVideoCapturer.captureDevices()
-            devicies.forEach { (device) in
+            devicies.forEach { device in
                 if device.position ==  cameraPositon {
                     targetDevice = device
                 }
@@ -181,7 +184,7 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
 
             // find target format
             let formats = RTCCameraVideoCapturer.supportedFormats(for: targetDevice!)
-            formats.forEach { (format) in
+            formats.forEach { format in
                 let fpsR = (format.videoSupportedFrameRateRanges.sorted { return $0.maxFrameRate < $1.maxFrameRate }.last)
                 fps = Int(fpsR?.maxFrameRate ?? 30)
                 
@@ -206,8 +209,8 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
             
         } else if let capturer = self.videoCapturer as? RTCFileVideoCapturer {
             print(#line, "setup file video capturer")
-            if let _ = Bundle.main.path( forResource: "sample.mp4", ofType: nil ) {
-                capturer.startCapturing(fromFileNamed: "sample.mp4") { (err) in
+            if let _ = Bundle.main.path(forResource: "sample.mp4", ofType: nil) {
+                capturer.startCapturing(fromFileNamed: "sample.mp4") { err in
                     print(err)
                 }
             } else {
@@ -220,7 +223,7 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
         self.remoteVideoTrack?.add(renderer)
     }
     
-    // MARK: - Audio
+    // MARK: - Audio - 設置音頻 Default
     private func configureAudioSession() {
         self.rtcAudioSession.lockForConfiguration()
         do {
@@ -232,7 +235,7 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
         self.rtcAudioSession.unlockForConfiguration()
     }
     
-    // 設置音頻
+    // NOTE: - Audio - 設置音頻 Custom
     private func configureAudioSession_Grey() {
         self.rtcAudioSession.lockForConfiguration()
         do {
@@ -255,22 +258,38 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
         // Audio
         let audioTrack = self.createAudioTrack()
         self.peerConnection.add(audioTrack, streamIds: [streamId])
+        //self.remoteAudioTrack = self.peerConnection
+        //    .transceivers.first { $0.mediaType == .audio }?.receiver.track as? RTCAudioTrack
         
         // Video
-//        let videoTrack = self.createVideoTrack()
-//        self.localVideoTrack = videoTrack
-//        self.peerConnection.add(videoTrack, streamIds: [streamId])
-//        self.remoteVideoTrack = self.peerConnection.transceivers
-//            .first { $0.mediaType == .video }?.receiver.track as? RTCVideoTrack
+        let videoTrack = self.createVideoTrack()
+        self.localVideoTrack = videoTrack
+        self.peerConnection.add(videoTrack, streamIds: [streamId])
+        self.remoteVideoTrack = self.peerConnection
+            .transceivers.first { $0.mediaType == .video }?.receiver.track as? RTCVideoTrack
         
-        // Data
-//        if let dataChannel = createDataChannel() {
-//            dataChannel.delegate = self
-//            self.localDataChannel = dataChannel
-//        }
+        // Data (Demo)
+        
+        if let dataChannel = createDataChannel() {
+            dataChannel.delegate = self
+            self.localDataChannel = dataChannel
+        }
     }
     
-    //func createDataChannelSenders() {}
+    /*func createDataChannelSenders_Grey() {
+        //Data , 以下兩個channel的id 是寫死的，所以並不會只用 offer and answer 的方式去索取 dataChannel 的id
+        if let dataChannel = createDataChannel() {
+            dataChannel.delegate = self
+            self.localDataChannel = dataChannel
+            self.remoteDataChannel = dataChannel
+        }
+        
+        if let dataChannel2 = createDataChannel2() {
+            dataChannel2.delegate = self
+            self.localTextDataChannel = dataChannel2
+            self.remoteTextDataChannel = dataChannel2
+        }
+    }*/
     
     /// 创建音频 track
     private func createAudioTrack() -> RTCAudioTrack {
@@ -301,7 +320,7 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
         config.isNegotiated = true
         config.channelId = 0 */
         guard let dataChannel = self.peerConnection.dataChannel(forLabel: "WebRTCData", configuration: config) else {
-            debugPrint("Warning: Couldn't create data channel.")
+            debugPrint("⚠️ Couldn't create Data Channel.")
             return nil
         }
         return dataChannel
@@ -310,13 +329,14 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
     func sendData(_ data: Data) {
         let buffer = RTCDataBuffer(data: data, isBinary: true)
         self.remoteDataChannel?.sendData(buffer)
+        
         /*
         if channelId == 0 {
             self.remoteDataChannel?.sendData(buffer)
         } else {
             self.remoteTextDataChannel?.sendData(buffer)
         }
-        */
+         */
     }
     
 }
@@ -326,19 +346,19 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
 extension WebRTCSingleton: RTCPeerConnectionDelegate {
     
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
-        
+        debugPrint("peerConnection should negotiate")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        
+        debugPrint("peerConnection new signaling state: \(stateChanged.rawValue)")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
-        
+        debugPrint("peerConnection did add stream, steam = \(stream)")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
-        
+        debugPrint("peerConnection did remove stream, stream = \(stream)")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
@@ -351,6 +371,7 @@ extension WebRTCSingleton: RTCPeerConnectionDelegate {
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
+        // debugPrint("peerConnection candidate = \(candidate.sdp), \(candidate.sdpMLineIndex), \(String(describing: candidate.sdpMid))")
         self.delegate?.webRTC(self, didDiscoverLocalCandidate: candidate)//ip...
     }
     
@@ -360,7 +381,7 @@ extension WebRTCSingleton: RTCPeerConnectionDelegate {
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
         debugPrint("peerConnection did open data channel id = \(dataChannel.channelId)")
-        self.remoteDataChannel = dataChannel
+        /* self.remoteDataChannel = dataChannel */
         /*
         if dataChannel.channelId == 0 {
             self.remoteDataChannel = dataChannel
@@ -375,12 +396,12 @@ extension WebRTCSingleton: RTCPeerConnectionDelegate {
 // MARK: - Audio Control
 extension WebRTCSingleton {
     
-    func muteAudio() {
-        self.setAudioEnabled(false)
-    }
-    
     func unmuteAudio() {
         self.setAudioEnabled(true)
+    }
+    
+    func muteAudio() {
+        self.setAudioEnabled(false)
     }
     
     func openVideo() {
@@ -410,7 +431,7 @@ extension WebRTCSingleton {
             do {
                 try self.rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
                 try self.rtcAudioSession.overrideOutputAudioPort(.none)
-                // try self.rtcAudioSession.setActive(false) Grey
+                try self.rtcAudioSession.setActive(false)// NOTE: - Grey
             } catch let error {
                 debugPrint("Error setting AVAudioSession category: \(error)")
             }
