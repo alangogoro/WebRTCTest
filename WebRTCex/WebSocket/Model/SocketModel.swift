@@ -25,10 +25,11 @@ struct ReceivedMessageModel: Codable {
     var ice_sdp: String?
     var ice_index: Int?
     var ice_mid: String?
+    var logid: String?
     
     enum CodingKeys: CodingKey {
         case action, user_id, content, link_id, to_userid, category, time, media, iceserver_config,
-             used_phone, info, ice_sdp, ice_index, ice_mid }
+             used_phone, info, ice_sdp, ice_index, ice_mid, logid }
     
     /* ⛔️🔰 忘記加上 CodingKeys 和 init 賦值的話，解析後該屬性的資料都是 nil 要注意 */
     init(from decoder: Decoder) throws {
@@ -47,6 +48,7 @@ struct ReceivedMessageModel: Codable {
         ice_sdp = try? container.decodeIfPresent(String.self, forKey: .ice_sdp) ?? ""
         ice_index = try? container.decodeIfPresent(Int.self, forKey: .ice_index) ?? 0
         ice_mid = try? container.decodeIfPresent(String.self, forKey: .ice_mid) ?? ""
+        logid = try? container.decodeIfPresent(String.self, forKey: .logid) ?? ""
     }
 }
 

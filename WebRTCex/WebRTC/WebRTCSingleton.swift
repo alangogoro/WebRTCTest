@@ -8,7 +8,7 @@
 import Foundation
 import WebRTC
 
-final class WebRTCSingleton: NSObject, GoogleWebRTC {
+final class WebRTCSingleton: NSObject {
     
     // MARK: - Property
     /** The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
@@ -98,6 +98,7 @@ final class WebRTCSingleton: NSObject, GoogleWebRTC {
         
         self.peerConnection.offer(for: constrains) { (sdp, error) in
             guard let sdp = sdp else { return }
+            debugPrint("◽️ peerConnection Offer SDP success")
             guard error == nil else {
                 debugPrint("Signaling Offer sdp error = ", error!)
                 return }

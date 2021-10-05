@@ -144,9 +144,13 @@ final class SocketManager {
     func send(candidate rtcIceCandidate: RTCIceCandidate, toUserId: String) {
         let candidateValue = CandidateModel(action: SocketType.clientCandidate.rawValue,
                                             user_id: userId,
+                                            
+                                            // TODO: - ⛔️ 你他媽的忘了餵 to_userid
+                                            to_userid: toUserId,
                                             ice_sdp: rtcIceCandidate.sdp,
                                             ice_index: Int(rtcIceCandidate.sdpMLineIndex),
                                             ice_mid: rtcIceCandidate.sdpMid!)
+        print("-> Send Candidate value = ", candidateValue)
         do {
             let encodedValue = try encoder.encode(candidateValue)
             let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
@@ -172,19 +176,7 @@ final class SocketManager {
                 }
             })
         } catch {
-            debugPrint("⚠️ CallRemote could not encode candidate: \(error)")
-        }
-        
-        do {
-            let encodedValue = try self.encoder.encode(data)
-            let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
-            webSocket.send(json: json) { result in
-                if result != nil {
-                    debugPrint("Call Remote result = \(result!)")
-                }
-            }
-        } catch {
-            debugPrint("⚠️ EndCall could not encode CallRemoteModel: \(error)")
+            debugPrint("⚠️ CallRemote could not encode CallRemoteModel: \(error)")
         }
     }
     
@@ -254,7 +246,10 @@ extension SocketManager: StarscreamDelegate {
             } else {
                 debugPrint("found client_answer SDP info NIL. Message: ", message)
             }
+        // TODO: - 未能執行
         case SocketType.clientCandidate.rawValue:
+            debugPrint("🟡 didReceive client_candidate")
+            print("sdp:\(message[0].ice_sdp!) sdpMLineIndex:\(message[0].ice_index!) sdpMid:\(message[0].ice_mid!)")
             // check if logid property exists
             self.delegate?
                 .didReceiveCall(self,
@@ -276,14 +271,16 @@ extension SocketManager: StarscreamDelegate {
         do {
             message = try decoder.decode(Message.self, from: data)
         } catch {
-            debugPrint("")
+            debugPrint("⚠️ Failed to Decode Message from Starscream Data")
             return
         }
         
         switch message {
         case .candidate(let iceCandidate):
+            debugPrint("iceCandidate = ", iceCandidate)
             self.delegate?.didReceiveCall(self, receivedCandidate: iceCandidate.rtcIceCandidate)
         case .sdp(let sessionDescription):
+            debugPrint("sessionDescription = ", sessionDescription)
             self.delegate?.didReceiveCall(self, receivedRemoteSdp: sessionDescription.rtcSessionDescription)
         }
     }

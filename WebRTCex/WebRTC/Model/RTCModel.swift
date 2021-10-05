@@ -84,14 +84,14 @@ struct OfferAnswerModel: Codable {
 
 // MARK: - WebRTC - Candidate
 struct CandidateModel: Codable {
-    var action: String
-    var user_id: String
+    let action: String
+    let user_id: String
     var user_img: String? = "img/profile_0.jpg"
     var user_name: String? = "訪客1"
-    var to_userid: String?
-    var ice_sdp: String
-    var ice_index: Int
-    var ice_mid: String
+    let to_userid: String
+    let ice_sdp: String
+    let ice_index: Int
+    let ice_mid: String
 }
 
 // MARK: - WebRTC -
