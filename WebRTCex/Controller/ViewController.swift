@@ -224,14 +224,20 @@ class ViewController: UIViewController {
     }
     
     @objc func handleAmplify() {
-        if isSpeakerOn {
+        defer {
+            DispatchQueue.main.async {
+                self.amplifyIcon.image = self.isSpeakerOn ? #imageLiteral(resourceName: "speaker_on") : #imageLiteral(resourceName: "speaker_off")
+            }
+        }
+        
+        switch isSpeakerOn {
+        case true:
             webRTC?.speakerOff()
             isSpeakerOn = false
-        } else {
+        case false:
             webRTC?.speakerOn()
             isSpeakerOn = true
         }
-        amplifyIcon.image = isSpeakerOn ? #imageLiteral(resourceName: "speaker_on") : #imageLiteral(resourceName: "speaker_off")
     }
     
     // MARK: - Helper
@@ -449,13 +455,12 @@ extension ViewController: SocketDelegate {
     
     func didEndCall(_ socket: SocketManager, userId: String, toUserId: String) {
         self.webRTC?.disconnect()
-//        self.isOnCall = false
+        //self.isOnCall = false
     }
     
 }
 
 extension ViewController: WebRTCDelegate {
-    //after offered local SDP
     func webRTC(_ webRTC: WebRTCSingleton, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
         self.localCandidates += 1
         debugPrint("◽️ didDiscover Local Candidate")
@@ -467,11 +472,13 @@ extension ViewController: WebRTCDelegate {
         case .connected, .completed:
             self.isOnCall = true
             debugPrint("✅ WebRTC Connected")
-        case .failed, .disconnected, .closed:
+        case .failed, .disconnected/*, .closed*/:
             self.isOnCall = false
             self.localCandidates = 0
             self.remoteCandidates = 0
             debugPrint("❌ WebRTC Disconnected")
+            
+            if self.isSpeakerOn { self.handleAmplify() }
             return
         default:
             self.isOnCall = false
