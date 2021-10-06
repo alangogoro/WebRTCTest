@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     
     // MARK: - Property
     var socketManager: SocketManager?
-    var webRTCinstance: WebRTCSingleton?
+    var webRTC: WebRTCSingleton?
     let userId = Constants.Ids.User_Id_He
     var linkId = 0
     var toUserId: String? = Constants.Ids.User_Id_She
@@ -25,44 +25,94 @@ class ViewController: UIViewController {
     }
     var isOnCall: Bool = false {
         didSet {
-            DispatchQueue.main.async { UIView.animate(withDuration: 0.6) {
+            DispatchQueue.main.async {
                 self.onCallGif.isHidden = self.isOnCall ? false : true
-                
-//                self.makeCallIcon.snp.updateConstraints {
-//                    if self.isOnCall {
-//                        $0.centerY.equalTo(self.view.snp.centerY)
-//                        $0.width.height.equalTo(screenWidth * (88/375))
-//                    } else {
-//                        $0.bottom.equalTo(-screenHeight * (124/812))
-//                        $0.width.height.equalTo(screenWidth * (72/375))
-//                    }
-//                }
-//                self.hangUpIcon.snp.updateConstraints {
-//                    if self.isOnCall {
-//                        $0.centerY.equalTo(self.view.snp.centerY)
-//                        $0.width.height.equalTo(screenWidth * (88/375))
-//                    } else {
-//                        $0.bottom.equalTo(-screenHeight * (124/812))
-//                        $0.width.height.equalTo(screenWidth * (72/375))
-//                    }
-//                }
-//                self.view.layoutIfNeeded()
-            } }
+                UIView.animate(withDuration: 0.7) {
+                    self.amplifyIcon.alpha = self.isOnCall ? 1 : 0
+                    self.amplifyIcon.isHidden = self.isOnCall ? false : true
+                    self.bottomStackView.layoutSubviews()
+                }
+            }
         }
     }
-    private var remoteCandidateCount = 0 {
-        didSet { DispatchQueue.main.async { self.candidatesLabel.text = "Remote Candidates: \(self.remoteCandidateCount)" } }
+    private var localCandidates = 0 {
+        didSet {
+            DispatchQueue.main.async {
+                self.localCandidatesLabel.text = "Local candidates: \(self.localCandidates)" }
+        }
     }
+    private var remoteCandidates = 0 {
+        didSet {
+            DispatchQueue.main.async {
+                self.remoteCandidatesLabel.text = "Remote candidates: \(self.remoteCandidates)"
+            }
+        }
+    }
+    private var isSpeakerOn: Bool = false
     
     private var chats = [Chat]()
     private var timer: Timer?
     
-    
-    private lazy var candidatesLabel: UILabel = {
+    private lazy var topStackView: UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [localCandidatesLabel,
+                                                remoteCandidatesLabel])
+        sv.backgroundColor = .clear
+        sv.axis = .vertical
+        sv.alignment = .fill
+        sv.distribution = .fillEqually
+        sv.spacing = 10
+        return sv
+    }()
+
+    private lazy var localCandidatesLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.text = "Remote Candidates: \(remoteCandidateCount)"
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textColor = .white
+        label.textAlignment = .left
+        label.text = "Local candidates: \(remoteCandidates)"
         return label
+    }()
+    
+    private lazy var remoteCandidatesLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textColor = .white
+        label.textAlignment = .left
+        label.text = "Remote candidates: \(remoteCandidates)"
+        return label
+    }()
+    
+    private lazy var onCallGif: SDAnimatedImageView = {
+        let iv = SDAnimatedImageView()
+        iv.image = SDAnimatedImage(named: "on-call.gif")
+        return iv
+    }()
+    
+    private lazy var bottomStackView: UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [amplifyIcon, makeCallIcon, hangUpIcon])
+        sv.backgroundColor = .clear
+        sv.axis = .horizontal
+        sv.alignment = .center
+        sv.distribution = .fillEqually
+        sv.spacing = screenWidth * (40/375)
+        return sv
+    }()
+    
+    private lazy var amplifyIcon: UIImageView = {
+        let iv = UIImageView()
+        iv.image = #imageLiteral(resourceName: "speaker_off")
+        iv.contentMode = .scaleAspectFill
+        iv.alpha = 0
+        return iv
+    }()
+    
+    private lazy var amplifyButton: UIButton = {
+        let btn = UIButton()
+        btn.backgroundColor = .clear
+        btn.addTarget(self,
+                      action: #selector(handleAmplify),
+                      for: .touchUpInside)
+        return btn
     }()
     
     private lazy var makeCallIcon: UIImageView = {
@@ -97,13 +147,6 @@ class ViewController: UIViewController {
         return btn
     }()
     
-    private lazy var onCallGif: SDAnimatedImageView = {
-        let iv = SDAnimatedImageView()
-        iv.image = SDAnimatedImage(named: "on-call.gif")
-        iv.isHidden = true
-        return iv
-    }()
-    
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -134,12 +177,6 @@ class ViewController: UIViewController {
                 socketManager!.connect()
             }
         }
-        /*
-        if timer != nil {
-            timer!.invalidate()
-            timer = nil
-        }
-         */
     }
     
     @objc func willTerminate() {
@@ -162,10 +199,10 @@ class ViewController: UIViewController {
         socketManager?.callRemote(data: callRemote)
         
         guard let iceServers = iceServers else { return }
-        webRTCinstance = WebRTCSingleton(iceServers: iceServers)
-        webRTCinstance?.delegate = self
+        webRTC = WebRTCSingleton(iceServers: iceServers)
+        webRTC?.delegate = self
         
-//        isOnCall = true
+        //isOnCall = true
     }
     
     @objc func handleHangUp() {
@@ -178,12 +215,23 @@ class ViewController: UIViewController {
         socketManager?.endCall(data: data, onSuccess: { result in
             if let _ = result {
                 //DispatchQueue.main.async {
-                self.webRTCinstance?.disconnect()
+                self.webRTC?.disconnect()
                 //}
             }
         })
         
-//        isOnCall = false
+        //isOnCall = false
+    }
+    
+    @objc func handleAmplify() {
+        if isSpeakerOn {
+            webRTC?.speakerOff()
+            isSpeakerOn = false
+        } else {
+            webRTC?.speakerOn()
+            isSpeakerOn = true
+        }
+        amplifyIcon.image = isSpeakerOn ? #imageLiteral(resourceName: "speaker_on") : #imageLiteral(resourceName: "speaker_off")
     }
     
     // MARK: - Helper
@@ -232,23 +280,43 @@ class ViewController: UIViewController {
         navigationItem.title = "Real-Time Communications"
         navigationController?.navigationBar.prefersLargeTitles = false
         
-        view.backgroundColor = .white
+        view.backgroundColor = .black
         
-        view.addSubview(candidatesLabel)
-        view.addSubview(makeCallIcon)
-        view.addSubview(makeCallButton)
-        view.addSubview(hangUpIcon)
-        view.addSubview(hangUpButton)
+        view.addSubview(topStackView)
         view.addSubview(onCallGif)
+        view.addSubview(bottomStackView)
+        view.addSubview(amplifyButton)
+        view.addSubview(makeCallButton)
+        view.addSubview(hangUpButton)
         
-        candidatesLabel.snp.makeConstraints {
-            $0.top.equalTo(screenHeight * (172/812))
+        topStackView.snp.makeConstraints {
+            $0.bottom.equalTo(view.snp.centerY).offset(-screenHeight * (144/812))
             $0.centerX.equalToSuperview()
         }
         
+        onCallGif.isHidden = true
+        onCallGif.snp.makeConstraints {
+            $0.top.equalTo(view.snp.centerY)
+            $0.centerX.equalTo(view)
+            $0.width.equalTo(screenWidth * (60/375))
+            $0.height.equalTo(screenWidth * (60/375))
+        }
+        
+        bottomStackView.snp.makeConstraints {
+            $0.top.equalTo(view.snp.centerY).offset(screenHeight * (156/812))
+            $0.centerX.equalToSuperview()
+        }
+        
+        amplifyIcon.isHidden = true
+        amplifyIcon.snp.makeConstraints {
+            $0.height.width.equalTo(screenWidth * (72/375))
+        }
+        
+        amplifyButton.snp.makeConstraints {
+            $0.edges.equalTo(amplifyIcon)
+        }
+        
         makeCallIcon.snp.makeConstraints {
-            $0.bottom.equalTo(-screenHeight * (124/812))
-            $0.right.equalTo(view.snp.centerX).offset(-screenWidth * (20/375))
             $0.width.height.equalTo(screenWidth * (72/375))
         }
         
@@ -257,8 +325,6 @@ class ViewController: UIViewController {
         }
         
         hangUpIcon.snp.makeConstraints {
-            $0.bottom.equalTo(-screenHeight * (124/812))
-            $0.left.equalTo(view.snp.centerX).offset(screenWidth * (20/375))
             $0.height.width.equalTo(screenWidth * (72/375))
         }
         
@@ -266,12 +332,6 @@ class ViewController: UIViewController {
             $0.edges.equalTo(hangUpIcon)
         }
         
-        onCallGif.snp.makeConstraints {
-            $0.bottom.equalTo(makeCallIcon.snp.top).offset(-screenHeight * (52/812))
-            $0.centerX.equalTo(view)
-            $0.width.equalTo(screenWidth * (60/375))
-            $0.height.equalTo(screenWidth * (60/375))
-        }
     }
     
     private func sendMessages() {
@@ -349,7 +409,7 @@ extension ViewController: SocketDelegate {
             // 去電並對方已回傳接受 ➡️ 進入 RTC 通訊
             debugPrint("SocketManager didReceive CallRemote_CallBack. From id:", toUserId)
             
-            self.webRTCinstance?.offer(completion: { localSdp in
+            self.webRTC?.offer(completion: { localSdp in
                 self.socketManager?.send(action: SocketType.clientOffer.rawValue,
                                          sdp: localSdp,
                                          toUserId: toUserId)
@@ -359,14 +419,14 @@ extension ViewController: SocketDelegate {
     
     func didReceiveCall(_ socket: SocketManager, receivedRemoteSdp sdp: RTCSessionDescription) {
         // 接收儲存異地 SDP
-        self.webRTCinstance?.set(remoteSdp: sdp) { error in
+        self.webRTC?.set(remoteSdp: sdp) { error in
             guard error == nil else {
                 debugPrint("setRemote SDP error: ", error!)
                 return }
             
             switch sdp.type {
             case .offer:
-                self.webRTCinstance?.answer(completion: { localSdp in
+                self.webRTC?.answer(completion: { localSdp in
                     self.socketManager?.send(action: SocketType.clientAnswer.rawValue,
                                              sdp: localSdp,
                                              toUserId: self.toUserId!)
@@ -381,15 +441,14 @@ extension ViewController: SocketDelegate {
         }
     }
     
-    // TODO: - 確有接收
     func didReceiveCall(_ socket: SocketManager, receivedCandidate candidate: RTCIceCandidate) {
-        self.remoteCandidateCount += 1
-        self.webRTCinstance?.set(remoteCandidate: candidate)
-        debugPrint("🟡 didReceiveCall - received Remote Candidates: \(self.remoteCandidateCount)")
+        self.remoteCandidates += 1
+        self.webRTC?.set(remoteCandidate: candidate)
+        debugPrint("🟡 didReceiveCall - received Remote Candidates: \(self.remoteCandidates)")
     }
     
     func didEndCall(_ socket: SocketManager, userId: String, toUserId: String) {
-        self.webRTCinstance?.disconnect()
+        self.webRTC?.disconnect()
 //        self.isOnCall = false
     }
     
@@ -398,6 +457,7 @@ extension ViewController: SocketDelegate {
 extension ViewController: WebRTCDelegate {
     //after offered local SDP
     func webRTC(_ webRTC: WebRTCSingleton, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
+        self.localCandidates += 1
         debugPrint("◽️ didDiscover Local Candidate")
         self.socketManager?.send(candidate: candidate, toUserId: toUserId!)
     }
@@ -406,12 +466,11 @@ extension ViewController: WebRTCDelegate {
         switch state {
         case .connected, .completed:
             self.isOnCall = true
-            // TODO: - Check what going
-            // self.webRTCinstance?.speakerOn()
             debugPrint("✅ WebRTC Connected")
-        case .disconnected, .failed:
+        case .failed, .disconnected, .closed:
             self.isOnCall = false
-            self.remoteCandidateCount = 0
+            self.localCandidates = 0
+            self.remoteCandidates = 0
             debugPrint("❌ WebRTC Disconnected")
             return
         default:
