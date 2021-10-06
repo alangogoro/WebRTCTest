@@ -100,7 +100,7 @@ final class WebRTCSingleton: NSObject {
             guard let sdp = sdp else { return }
             debugPrint("◽️ peerConnection Offer SDP success")
             guard error == nil else {
-                debugPrint("Signaling Offer sdp error = ", error!)
+                debugPrint("peerConnection Offer SDP error = ", error!)
                 return }
             self.peerConnection.setLocalDescription(sdp, completionHandler: { error in
                 completion(sdp)
@@ -351,11 +351,11 @@ extension WebRTCSingleton: RTCPeerConnectionDelegate {
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        debugPrint("peerConnection new signaling state: \(stateChanged.rawValue)")
+        debugPrint("peerConnection new signaling state: \(stateChanged.description)")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
-        debugPrint("peerConnection did add stream, steam = \(stream)")
+        debugPrint("peerConnection did add stream, stream = \(stream)")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
@@ -363,21 +363,12 @@ extension WebRTCSingleton: RTCPeerConnectionDelegate {
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
-        /* RTCIceConnectionState enum:
-        0→New,
-        1→Checking,
-        2→Connected,
-        3→ompleted,
-        Failed,
-        Disconnected,
-        6→Closed,
-        Count, */
-        debugPrint("peerConnection new connection state: \(newState.rawValue)")
+        debugPrint("🟡 peerConnection new connection State: \(newState.description)")
         self.delegate?.webRTC(self, didChangeConnectionState: newState)
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
-        debugPrint("peerConnection new gathering state: \(newState.rawValue)")
+        debugPrint("peerConnection new gathering state: \(newState.description)")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
@@ -390,7 +381,7 @@ extension WebRTCSingleton: RTCPeerConnectionDelegate {
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
-        debugPrint("peerConnection did open data channel id = \(dataChannel.channelId)")
+        debugPrint("peerConnection did open Data channel Id = \(dataChannel.channelId)")
         /* self.remoteDataChannel = dataChannel */
         /*
         if dataChannel.channelId == 0 {

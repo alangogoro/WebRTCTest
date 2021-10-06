@@ -112,11 +112,11 @@ final class SocketManager {
             let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
             webSocket.send(json: json, onSuccess: { result in
                 if result != nil {
-                    debugPrint("Call Remote result = \(result!)")
+                    debugPrint("CallRemote result = \(result!)")
                 }
             })
         } catch {
-            debugPrint("⚠️ callRemote Could not encode candidate: \(error)")
+            debugPrint("⚠️ CallRemote could not encode candidate: \(error)")
         }
     }
     
@@ -149,7 +149,6 @@ final class SocketManager {
                                             ice_sdp: rtcIceCandidate.sdp,
                                             ice_index: Int(rtcIceCandidate.sdpMLineIndex),
                                             ice_mid: rtcIceCandidate.sdpMid!)
-        print("-> Send Candidate value = ", candidateValue)
         do {
             let encodedValue = try encoder.encode(candidateValue)
             let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
@@ -171,11 +170,11 @@ final class SocketManager {
             let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
             webSocket.send(json: json, onSuccess: { result in
                 if result != nil {
-                    debugPrint("Call Remote result = \(result!)")
+                    debugPrint("End CallRemote result = \(result!)")
                 }
             })
         } catch {
-            debugPrint("⚠️ CallRemote could not encode CallRemoteModel: \(error)")
+            debugPrint("⚠️ End CallRemote could not encode CallRemoteModel: \(error)")
         }
     }
     
@@ -245,10 +244,8 @@ extension SocketManager: StarscreamDelegate {
             } else {
                 debugPrint("found client_answer SDP info NIL. Message: ", message)
             }
-        // TODO: - 未能執行
         case SocketType.clientCandidate.rawValue:
-            print("sdp:\(message[0].ice_sdp!) sdpMLineIndex:\(message[0].ice_index!) sdpMid:\(message[0].ice_mid!)")
-            // check if logid property exists
+            // print("sdp:\(message[0].ice_sdp!) sdpMLineIndex:\(message[0].ice_index!) sdpMid:\(message[0].ice_mid!)")
             if message[0].logid != nil { debugPrint("LOGID = \(message[0].logid!)") }
             self.delegate?
                 .didReceiveCall(self,

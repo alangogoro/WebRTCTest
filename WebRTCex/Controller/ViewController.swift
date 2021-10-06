@@ -15,9 +15,9 @@ class ViewController: UIViewController {
     // MARK: - Property
     var socketManager: SocketManager?
     var webRTCinstance: WebRTCSingleton?
-    let userId = Constants.Ids.User_Id_She
+    let userId = Constants.Ids.User_Id_He
     var linkId = 0
-    var toUserId: String? = Constants.Ids.User_Id_He
+    var toUserId: String? = Constants.Ids.User_Id_She
     var iceServers: [IceServer]?
     var isConnected: Bool = false {
         didSet { DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
@@ -51,7 +51,7 @@ class ViewController: UIViewController {
         }
     }
     private var remoteCandidateCount = 0 {
-        didSet { candidatesLabel.text = "Remote Candidates: \(remoteCandidateCount)" }
+        didSet { DispatchQueue.main.async { self.candidatesLabel.text = "Remote Candidates: \(self.remoteCandidateCount)" } }
     }
     
     private var chats = [Chat]()
@@ -385,7 +385,7 @@ extension ViewController: SocketDelegate {
     func didReceiveCall(_ socket: SocketManager, receivedCandidate candidate: RTCIceCandidate) {
         self.remoteCandidateCount += 1
         self.webRTCinstance?.set(remoteCandidate: candidate)
-        debugPrint("🟡 didReceiveCall - Receive remote Candidates")
+        debugPrint("🟡 didReceiveCall - received Remote Candidates: \(self.remoteCandidateCount)")
     }
     
     func didEndCall(_ socket: SocketManager, userId: String, toUserId: String) {
@@ -398,18 +398,21 @@ extension ViewController: SocketDelegate {
 extension ViewController: WebRTCDelegate {
     //after offered local SDP
     func webRTC(_ webRTC: WebRTCSingleton, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
-        // debugPrint("didDiscoverLocalCandidate = \(candidate.sdp)")
+        debugPrint("◽️ didDiscover Local Candidate")
         self.socketManager?.send(candidate: candidate, toUserId: toUserId!)
-        debugPrint("◽️ didDiscoverLocalCandidate")
     }
     
     func webRTC(_ webRTC: WebRTCSingleton, didChangeConnectionState state: RTCIceConnectionState) {
         switch state {
         case .connected, .completed:
             self.isOnCall = true
-            self.webRTCinstance?.speakerOn()
+            // TODO: - Check what going
+            // self.webRTCinstance?.speakerOn()
+            debugPrint("✅ WebRTC Connected")
         case .disconnected, .failed:
             self.isOnCall = false
+            self.remoteCandidateCount = 0
+            debugPrint("❌ WebRTC Disconnected")
             return
         default:
             self.isOnCall = false

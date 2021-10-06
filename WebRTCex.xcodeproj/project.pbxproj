@@ -15,7 +15,7 @@
 		CEACCC6C2705B43E00FD8A2B /* WebRTCSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */; };
 		CEACCC6F2707218100FD8A2B /* Authorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC6E2707218100FD8A2B /* Authorization.swift */; };
 		CEACCC712707326000FD8A2B /* WebRTCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACCC702707326000FD8A2B /* WebRTCDelegate.swift */; };
-		CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */; };
+		CEB1223D2702FF0000677BBC /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223C2702FF0000677BBC /* Extensions.swift */; };
 		CEB1223F2702FF8A00677BBC /* SocketModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1223E2702FF8A00677BBC /* SocketModel.swift */; };
 		CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB1224027031C0D00677BBC /* Data+Extension.swift */; };
 		CEB122432703222F00677BBC /* SocketEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB122422703222F00677BBC /* SocketEnum.swift */; };
@@ -41,7 +41,7 @@
 		CEACCC6B2705B43E00FD8A2B /* WebRTCSingleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCSingleton.swift; sourceTree = "<group>"; };
 		CEACCC6E2707218100FD8A2B /* Authorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorization.swift; sourceTree = "<group>"; };
 		CEACCC702707326000FD8A2B /* WebRTCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WebRTCDelegate.swift; path = "../../../../../Documents/iOS-2/03_Exercises/WebRTCDelegate.swift"; sourceTree = "<group>"; };
-		CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		CEB1223C2702FF0000677BBC /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		CEB1223E2702FF8A00677BBC /* SocketModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketModel.swift; sourceTree = "<group>"; };
 		CEB1224027031C0D00677BBC /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		CEB122422703222F00677BBC /* SocketEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketEnum.swift; sourceTree = "<group>"; };
@@ -133,7 +133,7 @@
 		CEB1223B2702FEE400677BBC /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				CEB1223C2702FF0000677BBC /* UIColor+Extension.swift */,
+				CEB1223C2702FF0000677BBC /* Extensions.swift */,
 				CEB1224027031C0D00677BBC /* Data+Extension.swift */,
 			);
 			path = Extension;
@@ -329,7 +329,7 @@
 				CEB1224527032D8E00677BBC /* SocketDelegate.swift in Sources */,
 				CEB1224127031C0D00677BBC /* Data+Extension.swift in Sources */,
 				CEB122432703222F00677BBC /* SocketEnum.swift in Sources */,
-				CEB1223D2702FF0000677BBC /* UIColor+Extension.swift in Sources */,
+				CEB1223D2702FF0000677BBC /* Extensions.swift in Sources */,
 				CEACCC6F2707218100FD8A2B /* Authorization.swift in Sources */,
 				CEACCC612704235800FD8A2B /* RTCModel.swift in Sources */,
 				CEB775882702C81400EF4E15 /* SceneDelegate.swift in Sources */,

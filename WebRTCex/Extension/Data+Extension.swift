@@ -8,7 +8,6 @@
 import Foundation
 
 extension Data {
-    
     func parseToReceivedMessageModel() -> [ReceivedMessageModel]? {
         var list = [ReceivedMessageModel]()
         do {
@@ -19,5 +18,4 @@ extension Data {
             return nil
         }
     }
-    
 }
