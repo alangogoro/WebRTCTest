@@ -15,9 +15,9 @@ class ViewController: UIViewController {
     // MARK: - Property
     var socketManager: SocketManager?
     var webRTCinstance: WebRTCSingleton?
-    let userId = Constants.Ids.User_Id_He
+    let userId = Constants.Ids.User_Id_She
     var linkId = 0
-    var toUserId: String? = Constants.Ids.User_Id_She
+    var toUserId: String? = Constants.Ids.User_Id_He
     var iceServers: [IceServer]?
     var isConnected: Bool = false {
         didSet { DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
@@ -28,25 +28,25 @@ class ViewController: UIViewController {
             DispatchQueue.main.async { UIView.animate(withDuration: 0.6) {
                 self.onCallGif.isHidden = self.isOnCall ? false : true
                 
-                self.makeCallIcon.snp.updateConstraints {
-                    if self.isOnCall {
-                        $0.centerY.equalToSuperview()
-                        $0.width.height.equalTo(screenWidth * (88/375))
-                    } else {
-                        $0.bottom.equalTo(-screenHeight * (124/812))
-                        $0.width.height.equalTo(screenWidth * (72/375))
-                    }
-                }
-                self.hangUpIcon.snp.updateConstraints {
-                    if self.isOnCall {
-                        $0.centerY.equalToSuperview()
-                        $0.width.height.equalTo(screenWidth * (88/375))
-                    } else {
-                        $0.bottom.equalTo(-screenHeight * (124/812))
-                        $0.width.height.equalTo(screenWidth * (72/375))
-                    }
-                }
-                self.view.layoutIfNeeded()
+//                self.makeCallIcon.snp.updateConstraints {
+//                    if self.isOnCall {
+//                        $0.centerY.equalTo(self.view.snp.centerY)
+//                        $0.width.height.equalTo(screenWidth * (88/375))
+//                    } else {
+//                        $0.bottom.equalTo(-screenHeight * (124/812))
+//                        $0.width.height.equalTo(screenWidth * (72/375))
+//                    }
+//                }
+//                self.hangUpIcon.snp.updateConstraints {
+//                    if self.isOnCall {
+//                        $0.centerY.equalTo(self.view.snp.centerY)
+//                        $0.width.height.equalTo(screenWidth * (88/375))
+//                    } else {
+//                        $0.bottom.equalTo(-screenHeight * (124/812))
+//                        $0.width.height.equalTo(screenWidth * (72/375))
+//                    }
+//                }
+//                self.view.layoutIfNeeded()
             } }
         }
     }
@@ -373,7 +373,7 @@ extension ViewController: SocketDelegate {
                 })
                 debugPrint("🟡 didReceiveCall - Offer remote SDP")
             case .answer:
-                debugPrint("🟡 didReceiveCall - Answer remote SDP")
+                debugPrint("🟢 didReceiveCall - Answer remote SDP")
                 return
             default:
                 return
@@ -381,7 +381,7 @@ extension ViewController: SocketDelegate {
         }
     }
     
-    // TODO: - ⛔️ 未能執行
+    // TODO: - 確有接收
     func didReceiveCall(_ socket: SocketManager, receivedCandidate candidate: RTCIceCandidate) {
         self.remoteCandidateCount += 1
         self.webRTCinstance?.set(remoteCandidate: candidate)

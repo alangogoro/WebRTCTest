@@ -131,7 +131,7 @@ final class SocketManager {
             // debugPrint("json = ", json)
             webSocket.send(json: json) { result in
                 if result != nil {
-                    debugPrint("send rtcSdp result = \(String(describing: result))")
+                    debugPrint("🟢 send rtcSdp result = \(String(describing: result))")
                 } else {
                     debugPrint("sent rtcSdp failed")
                 }
@@ -144,7 +144,6 @@ final class SocketManager {
     func send(candidate rtcIceCandidate: RTCIceCandidate, toUserId: String) {
         let candidateValue = CandidateModel(action: SocketType.clientCandidate.rawValue,
                                             user_id: userId,
-                                            
                                             // TODO: - ⛔️ 你他媽的忘了餵 to_userid
                                             to_userid: toUserId,
                                             ice_sdp: rtcIceCandidate.sdp,
@@ -156,7 +155,7 @@ final class SocketManager {
             let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
             self.webSocket.send(json: json) { result in
                 if result != nil {
-                    debugPrint("send rtcIceCandidate result = \(String(describing: result))")
+                    debugPrint("🟢 send rtcIceCandidate result = \(String(describing: result))")
                 } else {
                     debugPrint("sent rtcIceCandidate failed")
                 }
@@ -248,9 +247,9 @@ extension SocketManager: StarscreamDelegate {
             }
         // TODO: - 未能執行
         case SocketType.clientCandidate.rawValue:
-            debugPrint("🟡 didReceive client_candidate")
             print("sdp:\(message[0].ice_sdp!) sdpMLineIndex:\(message[0].ice_index!) sdpMid:\(message[0].ice_mid!)")
             // check if logid property exists
+            if message[0].logid != nil { debugPrint("LOGID = \(message[0].logid!)") }
             self.delegate?
                 .didReceiveCall(self,
                                 receivedCandidate: RTCIceCandidate(sdp: message[0].ice_sdp!,

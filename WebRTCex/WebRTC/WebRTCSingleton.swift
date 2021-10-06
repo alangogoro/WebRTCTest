@@ -363,6 +363,15 @@ extension WebRTCSingleton: RTCPeerConnectionDelegate {
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
+        /* RTCIceConnectionState enum:
+        0→New,
+        1→Checking,
+        2→Connected,
+        3→ompleted,
+        Failed,
+        Disconnected,
+        6→Closed,
+        Count, */
         debugPrint("peerConnection new connection state: \(newState.rawValue)")
         self.delegate?.webRTC(self, didChangeConnectionState: newState)
     }
@@ -463,7 +472,7 @@ extension WebRTCSingleton {
 extension WebRTCSingleton: RTCDataChannelDelegate {
     
     func dataChannelDidChangeState(_ dataChannel: RTCDataChannel) {
-        debugPrint("dataChannel did change state: \(dataChannel.readyState)")
+        debugPrint("dataChannel did change state: \(dataChannel.readyState.rawValue)")
     }
     
     func dataChannel(_ dataChannel: RTCDataChannel, didReceiveMessageWith buffer: RTCDataBuffer) {
