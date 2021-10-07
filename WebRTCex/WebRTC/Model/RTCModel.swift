@@ -62,6 +62,12 @@ enum UsedPhoneStatus: Int {
     case answer = 1
 }
 
+enum UsedPhoneCallbackStatus: Int {
+    case call = 0
+    case answer = 1
+    case reject = 3
+}
+
 enum MediaType: Int {
     case audio = 1
     case video = 2

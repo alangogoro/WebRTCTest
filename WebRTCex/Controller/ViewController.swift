@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     
     // MARK: - Property
     var socketManager: SocketManager?
-    var webRTCinstance: WebRTCSingleton?
+    var webRTC: WebRTCSingleton?
     let userId = Constants.Ids.User_Id_He
     var linkId = 0
     var toUserId: String? = Constants.Ids.User_Id_She
@@ -25,44 +25,104 @@ class ViewController: UIViewController {
     }
     var isOnCall: Bool = false {
         didSet {
-            DispatchQueue.main.async { UIView.animate(withDuration: 0.6) {
+            DispatchQueue.main.async {
                 self.onCallGif.isHidden = self.isOnCall ? false : true
-                
-//                self.makeCallIcon.snp.updateConstraints {
-//                    if self.isOnCall {
-//                        $0.centerY.equalTo(self.view.snp.centerY)
-//                        $0.width.height.equalTo(screenWidth * (88/375))
-//                    } else {
-//                        $0.bottom.equalTo(-screenHeight * (124/812))
-//                        $0.width.height.equalTo(screenWidth * (72/375))
-//                    }
-//                }
-//                self.hangUpIcon.snp.updateConstraints {
-//                    if self.isOnCall {
-//                        $0.centerY.equalTo(self.view.snp.centerY)
-//                        $0.width.height.equalTo(screenWidth * (88/375))
-//                    } else {
-//                        $0.bottom.equalTo(-screenHeight * (124/812))
-//                        $0.width.height.equalTo(screenWidth * (72/375))
-//                    }
-//                }
-//                self.view.layoutIfNeeded()
-            } }
+                UIView.animate(withDuration: 0.7) {
+                    self.amplifyIcon.alpha = self.isOnCall ? 1 : 0
+                    self.amplifyIcon.isHidden = self.isOnCall ? false : true
+                    self.bottomStackView.layoutSubviews()
+                }
+            }
         }
     }
-    private var remoteCandidateCount = 0 {
-        didSet { DispatchQueue.main.async { self.candidatesLabel.text = "Remote Candidates: \(self.remoteCandidateCount)" } }
+    private var localCandidates = 0 {
+        didSet {
+            DispatchQueue.main.async {
+                self.localCandidatesLabel.text = "Local candidates: \(self.localCandidates)" }
+        }
     }
+    private var remoteCandidates = 0 {
+        didSet {
+            DispatchQueue.main.async {
+                self.remoteCandidatesLabel.text = "Remote candidates: \(self.remoteCandidates)"
+            }
+        }
+    }
+    private var isSpeakerOn: Bool = false
     
     private var chats = [Chat]()
     private var timer: Timer?
     
-    
-    private lazy var candidatesLabel: UILabel = {
+    private lazy var topStackView: UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [localCandidatesLabel,
+                                                remoteCandidatesLabel])
+        sv.backgroundColor = .clear
+        sv.axis = .vertical
+        sv.alignment = .fill
+        sv.distribution = .fillEqually
+        sv.spacing = 12
+        return sv
+    }()
+
+    private lazy var localCandidatesLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.text = "Remote Candidates: \(remoteCandidateCount)"
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textColor = .white
+        label.textAlignment = .left
+        label.text = "Local candidates: \(remoteCandidates)"
         return label
+    }()
+    
+    private lazy var remoteCandidatesLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textColor = .white
+        label.textAlignment = .left
+        label.text = "Remote candidates: \(remoteCandidates)"
+        return label
+    }()
+    
+    private lazy var stateLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = .white
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.text = "連線狀態"
+        return label
+    }()
+    
+    private lazy var onCallGif: SDAnimatedImageView = {
+        let iv = SDAnimatedImageView()
+        iv.image = SDAnimatedImage(named: "on-call.gif")
+        return iv
+    }()
+    
+    private lazy var bottomStackView: UIStackView = {
+        let sv = UIStackView(arrangedSubviews: [amplifyIcon, makeCallIcon, hangUpIcon])
+        sv.backgroundColor = .clear
+        sv.axis = .horizontal
+        sv.alignment = .center
+        sv.distribution = .fillEqually
+        sv.spacing = screenWidth * (40/375)
+        return sv
+    }()
+    
+    private lazy var amplifyIcon: UIImageView = {
+        let iv = UIImageView()
+        iv.image = #imageLiteral(resourceName: "speaker_off")
+        iv.contentMode = .scaleAspectFill
+        iv.alpha = 0
+        return iv
+    }()
+    
+    private lazy var amplifyButton: UIButton = {
+        let btn = UIButton()
+        btn.backgroundColor = .clear
+        btn.addTarget(self,
+                      action: #selector(handleAmplify),
+                      for: .touchUpInside)
+        return btn
     }()
     
     private lazy var makeCallIcon: UIImageView = {
@@ -97,13 +157,6 @@ class ViewController: UIViewController {
         return btn
     }()
     
-    private lazy var onCallGif: SDAnimatedImageView = {
-        let iv = SDAnimatedImageView()
-        iv.image = SDAnimatedImage(named: "on-call.gif")
-        iv.isHidden = true
-        return iv
-    }()
-    
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -120,6 +173,7 @@ class ViewController: UIViewController {
         if socketManager != nil /* && checkIsCalling() */ {
             isConnected = false
             socketManager!.disconnect()
+            stateLabel.text = "WebSocket 連線結束"
         }
     }
     
@@ -132,14 +186,9 @@ class ViewController: UIViewController {
             if !socketManager!.isSocketConnected /* checkIsSocketLinkOn() */ {
                 isConnected = false
                 socketManager!.connect()
+                stateLabel.text = "WebSocket 連線中"
             }
         }
-        /*
-        if timer != nil {
-            timer!.invalidate()
-            timer = nil
-        }
-         */
     }
     
     @objc func willTerminate() {
@@ -162,28 +211,56 @@ class ViewController: UIViewController {
         socketManager?.callRemote(data: callRemote)
         
         guard let iceServers = iceServers else { return }
-        webRTCinstance = WebRTCSingleton(iceServers: iceServers)
-        webRTCinstance?.delegate = self
+        webRTC = WebRTCSingleton(iceServers: iceServers)
+        webRTC?.delegate = self
         
-//        isOnCall = true
+        stateLabel.text = "撥號中 ☎️"
+        //isOnCall = true
     }
     
     @objc func handleHangUp() {
         guard let toUserId = toUserId else { return }
-        let data = CallRemoteModel(action: SocketType.cancelPhone.rawValue,
-                                   user_id: userId, to_userid: toUserId,
-                                   used_phone: UsedPhoneStatus.reject.rawValue,
-                                   time: 0)
-        
-        socketManager?.endCall(data: data, onSuccess: { result in
-            if let _ = result {
-                //DispatchQueue.main.async {
-                self.webRTCinstance?.disconnect()
-                //}
+        if isOnCall { // 掛斷
+            let data = CallRemoteModel(action: SocketType.cancelPhone.rawValue,
+                                       user_id: userId,
+                                       to_userid: toUserId,
+                                       used_phone: UsedPhoneStatus.reject.rawValue,
+                                       time: 0)
+            
+            socketManager?.endCall(data: data, onSuccess: { result in
+                if let _ = result {
+                    //DispatchQueue.main.async {
+                    self.webRTC?.disconnect()
+                    self.stateLabel.text = "結束通話 ❌"
+                    //}
+                }
+            })
+            //isOnCall = false
+        } else {      // 拒接
+            let data = CallRemoteModel(action: SocketType.callRemote.rawValue,
+                                       user_id: userId,
+                                       to_userid: toUserId,
+                                       used_phone: UsedPhoneStatus.reject.rawValue)
+            socketManager?.callRemote(data: data)
+            stateLabel.text = "拒絕接聽 ❌"
+        }
+    }
+    
+    @objc func handleAmplify() {
+        defer {
+            DispatchQueue.main.async {
+                self.amplifyIcon.image = self.isSpeakerOn ? #imageLiteral(resourceName: "speaker_on") : #imageLiteral(resourceName: "speaker_off")
             }
-        })
+        }
         
-//        isOnCall = false
+        switch isSpeakerOn {
+        case true:
+            webRTC?.speakerOff()
+            isSpeakerOn = false
+        case false:
+            webRTC?.speakerOn()
+            isSpeakerOn = true
+        }
     }
     
     // MARK: - Helper
@@ -199,6 +276,7 @@ class ViewController: UIViewController {
             socketManager.connect()
         }
         //}
+        stateLabel.text = "WebSocket 連線中"
     }
     
     private func addObservers() {
@@ -232,23 +310,49 @@ class ViewController: UIViewController {
         navigationItem.title = "Real-Time Communications"
         navigationController?.navigationBar.prefersLargeTitles = false
         
-        view.backgroundColor = .white
+        view.backgroundColor = .black
         
-        view.addSubview(candidatesLabel)
-        view.addSubview(makeCallIcon)
-        view.addSubview(makeCallButton)
-        view.addSubview(hangUpIcon)
-        view.addSubview(hangUpButton)
+        view.addSubview(topStackView)
         view.addSubview(onCallGif)
+        view.addSubview(bottomStackView)
+        view.addSubview(stateLabel)
+        view.addSubview(amplifyButton)
+        view.addSubview(makeCallButton)
+        view.addSubview(hangUpButton)
         
-        candidatesLabel.snp.makeConstraints {
-            $0.top.equalTo(screenHeight * (172/812))
+        topStackView.snp.makeConstraints {
+            $0.bottom.equalTo(view.snp.centerY).offset(-screenHeight * (144/812))
             $0.centerX.equalToSuperview()
         }
         
+        stateLabel.snp.makeConstraints {
+            $0.top.equalTo(topStackView.snp.bottom).offset(screenHeight * (48/812))
+            $0.centerX.equalTo(view)
+        }
+        
+        onCallGif.isHidden = true
+        onCallGif.snp.makeConstraints {
+            $0.top.equalTo(view.snp.centerY)
+            $0.centerX.equalTo(view)
+            $0.width.equalTo(screenWidth * (60/375))
+            $0.height.equalTo(screenWidth * (60/375))
+        }
+        
+        bottomStackView.snp.makeConstraints {
+            $0.top.equalTo(view.snp.centerY).offset(screenHeight * (156/812))
+            $0.centerX.equalTo(view)
+        }
+        
+        amplifyIcon.isHidden = true
+        amplifyIcon.snp.makeConstraints {
+            $0.height.width.equalTo(screenWidth * (72/375))
+        }
+        
+        amplifyButton.snp.makeConstraints {
+            $0.edges.equalTo(amplifyIcon)
+        }
+        
         makeCallIcon.snp.makeConstraints {
-            $0.bottom.equalTo(-screenHeight * (124/812))
-            $0.right.equalTo(view.snp.centerX).offset(-screenWidth * (20/375))
             $0.width.height.equalTo(screenWidth * (72/375))
         }
         
@@ -257,8 +361,6 @@ class ViewController: UIViewController {
         }
         
         hangUpIcon.snp.makeConstraints {
-            $0.bottom.equalTo(-screenHeight * (124/812))
-            $0.left.equalTo(view.snp.centerX).offset(screenWidth * (20/375))
             $0.height.width.equalTo(screenWidth * (72/375))
         }
         
@@ -266,12 +368,6 @@ class ViewController: UIViewController {
             $0.edges.equalTo(hangUpIcon)
         }
         
-        onCallGif.snp.makeConstraints {
-            $0.bottom.equalTo(makeCallIcon.snp.top).offset(-screenHeight * (52/812))
-            $0.centerX.equalTo(view)
-            $0.width.equalTo(screenWidth * (60/375))
-            $0.height.equalTo(screenWidth * (60/375))
-        }
     }
     
     private func sendMessages() {
@@ -308,6 +404,7 @@ extension ViewController: SocketDelegate {
     
     func didLinkOn(_ socket: SocketManager, iceServers: [IceServer]) {
         self.iceServers = iceServers
+        DispatchQueue.main.async { self.stateLabel.text = "WebSocket 已連線" }
     }
     
     func didBind(_ socket: SocketManager, linkId: Int) {
@@ -315,6 +412,7 @@ extension ViewController: SocketDelegate {
         self.linkId = linkId
         self.isConnected = true
         
+        DispatchQueue.main.async { self.stateLabel.text = "WebSocket 已連線" }
         // self.sendMessages()
     }
     
@@ -340,33 +438,43 @@ extension ViewController: SocketDelegate {
     func didReceiveCall(_ socket: SocketManager, message: ReceivedMessageModel) {
         guard let toUserId = message.to_userid else { return }
         guard let used_phone = message.used_phone else { return }
-        if used_phone == 0 {
-            // 來電並回傳接受
+        
+        switch used_phone {
+        // 來電
+        case UsedPhoneCallbackStatus.call.rawValue:
             self.toUserId = toUserId
-            self.handleCall()
+            DispatchQueue.main.async { self.stateLabel.text = "⚠️ 來電通知 ⚠️" }
             debugPrint("SocketManager didReceive CallRemote. From id:", toUserId)
-        } else if used_phone == 1 {
-            // 去電並對方已回傳接受 ➡️ 進入 RTC 通訊
-            debugPrint("SocketManager didReceive CallRemote_CallBack. From id:", toUserId)
+        // 去電並對方已回傳接受 ➡️ 進入 RTC 通訊
+        case UsedPhoneCallbackStatus.answer.rawValue:
+            DispatchQueue.main.async { self.stateLabel.text = "WebRTC 已連線" }
+            debugPrint("SocketManager didReceive CallRemote_Callback. From id:", toUserId)
             
-            self.webRTCinstance?.offer(completion: { localSdp in
+            self.webRTC?.offer(completion: { localSdp in
                 self.socketManager?.send(action: SocketType.clientOffer.rawValue,
                                          sdp: localSdp,
                                          toUserId: toUserId)
             })
-        } else { fatalError("didReceiveCall used_phone = \(used_phone)") }
+        // 去電並對方回傳拒絕
+        case UsedPhoneCallbackStatus.reject.rawValue:
+            self.webRTC?.disconnect()
+            DispatchQueue.main.async { self.stateLabel.text = "拒絕接聽 ❌" }
+        default:
+            debugPrint("didReceiveCall used_phone = \(used_phone)")
+        }
     }
     
     func didReceiveCall(_ socket: SocketManager, receivedRemoteSdp sdp: RTCSessionDescription) {
         // 接收儲存異地 SDP
-        self.webRTCinstance?.set(remoteSdp: sdp) { error in
+        self.webRTC?.set(remoteSdp: sdp) { error in
             guard error == nil else {
                 debugPrint("setRemote SDP error: ", error!)
                 return }
+            DispatchQueue.main.async { self.stateLabel.text = "WebRTC 開始連線" }
             
             switch sdp.type {
             case .offer:
-                self.webRTCinstance?.answer(completion: { localSdp in
+                self.webRTC?.answer(completion: { localSdp in
                     self.socketManager?.send(action: SocketType.clientAnswer.rawValue,
                                              sdp: localSdp,
                                              toUserId: self.toUserId!)
@@ -381,24 +489,24 @@ extension ViewController: SocketDelegate {
         }
     }
     
-    // TODO: - 確有接收
     func didReceiveCall(_ socket: SocketManager, receivedCandidate candidate: RTCIceCandidate) {
-        self.remoteCandidateCount += 1
-        self.webRTCinstance?.set(remoteCandidate: candidate)
-        debugPrint("🟡 didReceiveCall - received Remote Candidates: \(self.remoteCandidateCount)")
+        self.remoteCandidates += 1
+        self.webRTC?.set(remoteCandidate: candidate)
+        debugPrint("🟡 didReceiveCall - received Remote Candidates: \(self.remoteCandidates)")
     }
     
     func didEndCall(_ socket: SocketManager, userId: String, toUserId: String) {
-        self.webRTCinstance?.disconnect()
-//        self.isOnCall = false
+        self.webRTC?.disconnect()
+        DispatchQueue.main.async { self.stateLabel.text = "已掛斷 ❌\nWebRTC 連線結束" }
+        //self.isOnCall = false
     }
     
 }
 
 extension ViewController: WebRTCDelegate {
-    //after offered local SDP
     func webRTC(_ webRTC: WebRTCSingleton, didDiscoverLocalCandidate candidate: RTCIceCandidate) {
-        debugPrint("◽️ didDiscover Local Candidate")
+        self.localCandidates += 1
+        // debugPrint("◻️ didDiscover Local Candidate")
         self.socketManager?.send(candidate: candidate, toUserId: toUserId!)
     }
     
@@ -406,13 +514,16 @@ extension ViewController: WebRTCDelegate {
         switch state {
         case .connected, .completed:
             self.isOnCall = true
-            // TODO: - Check what going
-            // self.webRTCinstance?.speakerOn()
+            DispatchQueue.main.async { self.stateLabel.text = "WebRTC 已連線" }
             debugPrint("✅ WebRTC Connected")
-        case .disconnected, .failed:
+        case .failed, .disconnected, .closed:
             self.isOnCall = false
-            self.remoteCandidateCount = 0
+            self.localCandidates = 0
+            self.remoteCandidates = 0
+            DispatchQueue.main.async { self.stateLabel.text = "已掛斷 ❌\nWebRTC 連線結束" }
             debugPrint("❌ WebRTC Disconnected")
+            
+            if self.isSpeakerOn { self.handleAmplify() }
             return
         default:
             self.isOnCall = false
