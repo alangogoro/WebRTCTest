@@ -1,20 +1,30 @@
 PODS:
   - GoogleWebRTC (1.1.31999)
+  - SDWebImage (5.11.1):
+    - SDWebImage/Core (= 5.11.1)
+  - SDWebImage/Core (5.11.1)
+  - SnapKit (5.0.1)
   - Starscream (4.0.4)
 
 DEPENDENCIES:
   - GoogleWebRTC
+  - SDWebImage
+  - SnapKit (~> 5.0.0)
   - Starscream (~> 4.0.0)
 
 SPEC REPOS:
   trunk:
     - GoogleWebRTC
+    - SDWebImage
+    - SnapKit
     - Starscream
 
 SPEC CHECKSUMS:
   GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
+  SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
 
-PODFILE CHECKSUM: c57ca88f82b5bb45480c104f84994a4f78b4b924
+PODFILE CHECKSUM: 449443aff41c25dc417d895bede0ec31f6e80aac
 
 COCOAPODS: 1.11.0
