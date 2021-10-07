@@ -131,7 +131,7 @@ final class SocketManager {
             // debugPrint("json = ", json)
             webSocket.send(json: json) { result in
                 if result != nil {
-                    debugPrint("🟢 send rtcSdp result = \(String(describing: result))")
+                    debugPrint("🟢 send rtcSdp result = \(result!))")
                 } else {
                     debugPrint("sent rtcSdp failed")
                 }
@@ -154,7 +154,7 @@ final class SocketManager {
             let json = try JSONSerialization.jsonObject(with: encodedValue, options: [])
             self.webSocket.send(json: json) { result in
                 if result != nil {
-                    debugPrint("🟢 send rtcIceCandidate result = \(String(describing: result))")
+                    debugPrint("🟢 send rtcIceCandidate result = \(result!))")
                 } else {
                     debugPrint("sent rtcIceCandidate failed")
                 }
