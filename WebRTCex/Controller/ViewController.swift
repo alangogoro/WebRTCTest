@@ -30,7 +30,10 @@ class ViewController: UIViewController {
                 UIView.animate(withDuration: 0.7) {
                     self.amplifyIcon.alpha = self.isOnCall ? 1 : 0
                     self.amplifyIcon.isHidden = self.isOnCall ? false : true
-                    self.bottomStackView.layoutSubviews()
+                    // setNeedsLayout → 標記需要佈局 UI，會在下次循環一起更新
+                    // layoutIfNeeded → 立即更新 UI 佈局（搭配上文使用）
+                    self.bottomStackView.setNeedsLayout()
+                    self.bottomStackView.layoutIfNeeded()
                 }
             }
         }
